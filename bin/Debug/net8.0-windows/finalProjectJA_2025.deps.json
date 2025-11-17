@@ -9,6 +9,11 @@
       "finalProjectJA_2025/1.0.0": {
         "runtime": {
           "finalProjectJA_2025.dll": {}
+        },
+        "resources": {
+          "aa/finalProjectJA_2025.resources.dll": {
+            "locale": "aa"
+          }
         }
       }
     }
