@@ -15,6 +15,7 @@ namespace finalProjectJA_2025
         End
     };
 
+
     internal class Cell
     {
         Dictionary<string, Color> borderColor = new Dictionary<string, Color>();

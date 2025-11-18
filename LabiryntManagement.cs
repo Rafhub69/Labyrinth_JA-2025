@@ -9,6 +9,8 @@ namespace finalProjectJA_2025
 
         private int[] intTableSize = new int[255];
 
+        private string loadedLibrary = "C#";
+
         private bool createOrSolveLabirynth = true;
 
         private int maxCoreNumber;
@@ -56,6 +58,27 @@ namespace finalProjectJA_2025
             comboBoxCoresNumber.Text = "1";
 
             SetMyImageId(saveFileDialog1);
+        }
+
+        public void setControlsCoordinates()
+        {
+            //labelWidth
+            //labelHeight
+            //labelLibrary
+            //labelCellSize
+            //labelCoresNumber
+            //labelLabirynthChoice
+            //comboBoxWidth
+            //comboBoxHeight
+            //comboBoxCellSize
+            //comboBoxCoresNumber
+            //buttonSaveLabyrinth
+            //buttonSolveLabyrinth
+            //buttonCreateLabyrinth
+            //buttonSaveSolvedLabyrinth
+            //saveFileDialog1
+            //pictureBoxCentral
+            //pictureBoxBackground
         }
 
         private void SetSizeComboBox()
@@ -120,6 +143,36 @@ namespace finalProjectJA_2025
             //Debug.Write("\n");
         }
 
+        private void CreateLabyrinth()
+        {
+            MessageBox.Show("Create Labyrinth C#");
+        }
+
+        private void CreateLabyrinthC()
+        {
+            MessageBox.Show("Create Labyrinth C++");
+        }
+
+        private void CreateLabyrinthAssembler()
+        {
+            MessageBox.Show("Create Labyrinth Assembler");
+        }
+
+        private void SolveLabyrinth()
+        {
+            MessageBox.Show("Solve Labyrinth C#");
+        }
+
+        private void SolveLabyrinthC()
+        {
+            MessageBox.Show("Solve Labyrinth C++");
+        }
+
+        private void SolveLabyrinthAssembler()
+        {
+            MessageBox.Show("Solve Labyrinth Assembler");
+        }
+
         private void comboBoxHeight_SelectedIndexChanged(object sender, EventArgs e)
         {
             setNewLabirynthSize();
@@ -154,12 +207,42 @@ namespace finalProjectJA_2025
         private void buttonCreateLabyrinth_Click(object sender, EventArgs e)
         {
             createOrSolveLabirynth = true;
+            radioButtonCreatingLabiryth.Checked = true;
+
+            if (loadedLibrary == "C#")
+            {
+                CreateLabyrinth();
+            }
+            else if (loadedLibrary == "C++")
+            {
+                CreateLabyrinthC();
+            }
+            else if (loadedLibrary == "Assembler")
+            {
+                CreateLabyrinthAssembler();
+            }
+
             pictureBoxCentral.Image = createdlabirynth.showLabyrinth();
         }
 
         private void buttonSolveLabyrinth_Click(object sender, EventArgs e)
         {
             createOrSolveLabirynth = false;
+            radioButtonSolvingLabiryth.Checked = true;
+
+            if (loadedLibrary == "C#")
+            {
+                SolveLabyrinth();
+            }
+            else if (loadedLibrary == "C++")
+            {
+                SolveLabyrinthC();
+            }
+            else if (loadedLibrary == "Assembler")
+            {
+                SolveLabyrinthAssembler();
+            }
+
             pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
         }
 
@@ -171,6 +254,35 @@ namespace finalProjectJA_2025
         private void buttonSaveSolvedLabyrinth_Click(object sender, EventArgs e)
         {
             createdlabirynth.SaveMaze(saveFileDialog1, pictureBoxCentral.Image);
+        }
+
+        private void radioButtonCreatingLabiryth_CheckedChanged(object sender, EventArgs e)
+        {
+            createOrSolveLabirynth = radioButtonCreatingLabiryth.Checked;
+
+            pictureBoxCentral.Image = createdlabirynth.showLabyrinth();
+        }
+
+        private void radioButtonSolvingLabiryth_CheckedChanged(object sender, EventArgs e)
+        {
+            createOrSolveLabirynth = radioButtonSolvingLabiryth.Checked;
+
+            pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
+        }
+
+        private void radioButtonLibraryAssembler_CheckedChanged(object sender, EventArgs e)
+        {
+            loadedLibrary = "Assembler";
+        }
+
+        private void radioButtonLibraryCplus_CheckedChanged(object sender, EventArgs e)
+        {
+            loadedLibrary = "C++";
+        }
+
+        private void radioButtonLibraryCHash_CheckedChanged(object sender, EventArgs e)
+        {
+            loadedLibrary = "C#";
         }
     }
 }
