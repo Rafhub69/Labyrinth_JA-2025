@@ -42,20 +42,25 @@ namespace finalProjectJA_2025
                 intTableSize[i] = i + 1;
             }
 
-            createdlabirynth = new Labirynt();
-            solvedLabirynth = new Labirynt();
+            createdlabirynth = new Labirynt(intCellSize[4], "maze");
+            solvedLabirynth = new Labirynt(intCellSize[4], "solvedMaze");
 
-            for (int i = 0; i < intTableSize.Length; i++)
-            {
-                comboBoxWidth.Items.Add(intTableSize.GetValue(i).ToString());
-                comboBoxHeight.Items.Add(intTableSize.GetValue(i).ToString());
-            }
+            SetSizeComboBox();
+
+            int totalWidth = solvedLabirynth.LabiryntSize.X * solvedLabirynth.CellSize.X;
+            int totalHeight = solvedLabirynth.LabiryntSize.Y * solvedLabirynth.CellSize.Y;
+
+            image = new Bitmap(totalWidth, totalHeight);
+            pictureBoxCentral.Image = image;
 
             comboBoxHeight.Text = intTableSize[4].ToString();
             comboBoxWidth.Text = intTableSize[4].ToString();
 
             comboBoxCellSize.Text = intCellSize[4].ToString();
             comboBoxCoresNumber.Text = "1";
+
+            radioButtonCreatingLabiryth.Checked = true;
+            radioButtonLibraryCHash.Checked = true;
 
             SetMyImageId(saveFileDialog1);
         }
@@ -121,17 +126,14 @@ namespace finalProjectJA_2025
 
             if (createOrSolveLabirynth)
             {
-                createdlabirynth = new Labirynt(intTableSize[indexWidth], intTableSize[indexHeight]);
+                createdlabirynth = new Labirynt(intTableSize[indexWidth], intTableSize[indexHeight], "maze");
                 createdlabirynth.CellSize = new Point(intCellSize[indexCellSize], intCellSize[indexCellSize]);
             }
             else
             {
-                solvedLabirynth = new Labirynt(intTableSize[indexWidth], intTableSize[indexHeight]);
+                solvedLabirynth = new Labirynt(intTableSize[indexWidth], intTableSize[indexHeight], "solvedMaze");
                 solvedLabirynth.CellSize = new Point(intCellSize[indexCellSize], intCellSize[indexCellSize]);
             }
-
-            createdlabirynth.Name = "maze";
-            solvedLabirynth.Name = "solvedMaze";
 
             SetMyImageId(saveFileDialog1);
         }
@@ -145,32 +147,32 @@ namespace finalProjectJA_2025
 
         private void CreateLabyrinth()
         {
-            MessageBox.Show("Create Labyrinth C#");
+
         }
 
         private void CreateLabyrinthC()
         {
-            MessageBox.Show("Create Labyrinth C++");
+
         }
 
         private void CreateLabyrinthAssembler()
         {
-            MessageBox.Show("Create Labyrinth Assembler");
+
         }
 
         private void SolveLabyrinth()
         {
-            MessageBox.Show("Solve Labyrinth C#");
+
         }
 
         private void SolveLabyrinthC()
         {
-            MessageBox.Show("Solve Labyrinth C++");
+
         }
 
         private void SolveLabyrinthAssembler()
         {
-            MessageBox.Show("Solve Labyrinth Assembler");
+
         }
 
         private void comboBoxHeight_SelectedIndexChanged(object sender, EventArgs e)
@@ -283,6 +285,14 @@ namespace finalProjectJA_2025
         private void radioButtonLibraryCHash_CheckedChanged(object sender, EventArgs e)
         {
             loadedLibrary = "C#";
+        }
+
+        private void buttonResetLabyrinth_Click(object sender, EventArgs e)
+        {
+            createdlabirynth.Reset();
+            solvedLabirynth.Reset();
+
+            pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
         }
     }
 }

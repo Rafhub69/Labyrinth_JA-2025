@@ -33,9 +33,19 @@ namespace finalProjectJA_2025
             changeMaze(newSize);
         }
 
-        public Labirynt(int x, int y)
+        public Labirynt(int x, int y, string newName)
         {
+            Name = newName;
+
             changeMaze(new Point(x, y));
+        }
+
+        public Labirynt(int newCellSize, string newName)
+        {
+            CellSize = new Point(newCellSize, newCellSize);
+            Name = newName;
+
+            changeMaze(labiryntSize);
         }
 
         public void Reset()

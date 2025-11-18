@@ -55,6 +55,7 @@ namespace finalProjectJA_2025
             radioButtonLibraryCHash = new RadioButton();
             groupBoxLabirynthChoice = new GroupBox();
             groupBoxLibrary = new GroupBox();
+            buttonResetLabyrinth = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBoxCentral).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxBackground).BeginInit();
             groupBoxLabirynthChoice.SuspendLayout();
@@ -289,10 +290,10 @@ namespace finalProjectJA_2025
             // 
             // groupBoxLabirynthChoice
             // 
-            groupBoxLabirynthChoice.BackColor = SystemColors.ControlLight;
+            groupBoxLabirynthChoice.BackColor = SystemColors.ActiveCaption;
             groupBoxLabirynthChoice.Controls.Add(radioButtonCreatingLabiryth);
             groupBoxLabirynthChoice.Controls.Add(radioButtonSolvingLabiryth);
-            groupBoxLabirynthChoice.Location = new Point(886, 5);
+            groupBoxLabirynthChoice.Location = new Point(885, 5);
             groupBoxLabirynthChoice.Name = "groupBoxLabirynthChoice";
             groupBoxLabirynthChoice.Size = new Size(215, 23);
             groupBoxLabirynthChoice.TabIndex = 36;
@@ -300,7 +301,7 @@ namespace finalProjectJA_2025
             // 
             // groupBoxLibrary
             // 
-            groupBoxLibrary.BackColor = SystemColors.ControlLight;
+            groupBoxLibrary.BackColor = SystemColors.ActiveCaption;
             groupBoxLibrary.Controls.Add(radioButtonLibraryAssembler);
             groupBoxLibrary.Controls.Add(radioButtonLibraryCHash);
             groupBoxLibrary.Controls.Add(radioButtonLibraryCplus);
@@ -311,11 +312,22 @@ namespace finalProjectJA_2025
             groupBoxLibrary.TabIndex = 37;
             groupBoxLibrary.TabStop = false;
             // 
+            // buttonResetLabyrinth
+            // 
+            buttonResetLabyrinth.Location = new Point(1110, 4);
+            buttonResetLabyrinth.Name = "buttonResetLabyrinth";
+            buttonResetLabyrinth.Size = new Size(160, 23);
+            buttonResetLabyrinth.TabIndex = 38;
+            buttonResetLabyrinth.Text = "Resetuj labirynt";
+            buttonResetLabyrinth.UseVisualStyleBackColor = true;
+            buttonResetLabyrinth.Click += buttonResetLabyrinth_Click;
+            // 
             // LabiryntManagement
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1904, 1041);
+            Controls.Add(buttonResetLabyrinth);
             Controls.Add(groupBoxLibrary);
             Controls.Add(groupBoxLabirynthChoice);
             Controls.Add(labelLibrary);
@@ -375,5 +387,6 @@ namespace finalProjectJA_2025
         private RadioButton radioButtonLibraryCHash;
         private GroupBox groupBoxLabirynthChoice;
         private GroupBox groupBoxLibrary;
+        private Button buttonResetLabyrinth;
     }
 }
