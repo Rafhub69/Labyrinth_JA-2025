@@ -56,6 +56,7 @@ namespace finalProjectJA_2025
             groupBoxLabirynthChoice = new GroupBox();
             groupBoxLibrary = new GroupBox();
             buttonResetLabyrinth = new Button();
+            comboBoxSizeMode = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)pictureBoxCentral).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxBackground).BeginInit();
             groupBoxLabirynthChoice.SuspendLayout();
@@ -211,9 +212,9 @@ namespace finalProjectJA_2025
             pictureBoxCentral.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pictureBoxCentral.BackColor = SystemColors.Control;
             pictureBoxCentral.Cursor = Cursors.Cross;
-            pictureBoxCentral.Location = new Point(10, 70);
+            pictureBoxCentral.Location = new Point(10, 80);
             pictureBoxCentral.Name = "pictureBoxCentral";
-            pictureBoxCentral.Size = new Size(1880, 960);
+            pictureBoxCentral.Size = new Size(1880, 950);
             pictureBoxCentral.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBoxCentral.TabIndex = 6;
             pictureBoxCentral.TabStop = false;
@@ -314,19 +315,29 @@ namespace finalProjectJA_2025
             // 
             // buttonResetLabyrinth
             // 
-            buttonResetLabyrinth.Location = new Point(1110, 4);
+            buttonResetLabyrinth.Location = new Point(1110, 5);
             buttonResetLabyrinth.Name = "buttonResetLabyrinth";
-            buttonResetLabyrinth.Size = new Size(160, 23);
+            buttonResetLabyrinth.Size = new Size(150, 23);
             buttonResetLabyrinth.TabIndex = 38;
             buttonResetLabyrinth.Text = "Resetuj labirynt";
             buttonResetLabyrinth.UseVisualStyleBackColor = true;
             buttonResetLabyrinth.Click += buttonResetLabyrinth_Click;
+            // 
+            // comboBoxSizeMode
+            // 
+            comboBoxSizeMode.FormattingEnabled = true;
+            comboBoxSizeMode.Location = new Point(1110, 40);
+            comboBoxSizeMode.Name = "comboBoxSizeMode";
+            comboBoxSizeMode.Size = new Size(150, 23);
+            comboBoxSizeMode.TabIndex = 39;
+            comboBoxSizeMode.SelectedIndexChanged += comboBoxSizeMode_SelectedIndexChanged;
             // 
             // LabiryntManagement
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1904, 1041);
+            Controls.Add(comboBoxSizeMode);
             Controls.Add(buttonResetLabyrinth);
             Controls.Add(groupBoxLibrary);
             Controls.Add(groupBoxLabirynthChoice);
@@ -388,5 +399,6 @@ namespace finalProjectJA_2025
         private GroupBox groupBoxLabirynthChoice;
         private GroupBox groupBoxLibrary;
         private Button buttonResetLabyrinth;
+        private ComboBox comboBoxSizeMode;
     }
 }

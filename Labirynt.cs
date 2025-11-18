@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ namespace finalProjectJA_2025
 
         public Labirynt()
         {
-            changeMaze(labiryntSize);
+            changeMaze();
         }
 
         public Labirynt(Point newSize)
@@ -45,21 +46,33 @@ namespace finalProjectJA_2025
             CellSize = new Point(newCellSize, newCellSize);
             Name = newName;
 
-            changeMaze(labiryntSize);
+            changeMaze();
+        }
+
+        public void Reset(int newCellSize, int newMazeWidth, int newMazeHeight)
+        {
+            CellSize = new Point(newCellSize, newCellSize);
+            labiryntSize = new Point(newMazeWidth, newMazeHeight);
+
+            Reset();
         }
 
         public void Reset()
         {
             BeginingCell = new Point(-1, -1);
-            CellSize = new Point(50, 50);
             EndCell = new Point(-1, -1);
-            changeMaze(LabiryntSize);
+            changeMaze();
         }
 
         public void changeMaze(Point newSize)
         {
             LabiryntSize = newSize;
 
+            changeMaze();
+        }
+
+        public void changeMaze()
+        {
             Maze = new Cell[LabiryntSize.X, LabiryntSize.Y];
 
             for (int i = 0; i < LabiryntSize.X; i++)
