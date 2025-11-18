@@ -64,12 +64,12 @@ namespace finalProjectJA_2025
         private void setColor()
         {
             RoleColor.Add(Roles.Empty.ToString(), Color.White);
-            RoleColor.Add(Roles.Wall.ToString(), Color.Black);
+            RoleColor.Add(Roles.Wall.ToString(), Color.DarkGray);
             RoleColor.Add(Roles.Begining.ToString(), Color.Red);
             RoleColor.Add(Roles.End.ToString(), Color.Blue);
 
             BorderColor.Add(Roles.Empty.ToString(), Color.Black);
-            BorderColor.Add(Roles.Wall.ToString(), Color.White);
+            BorderColor.Add(Roles.Wall.ToString(), Color.Black);
             BorderColor.Add(Roles.Begining.ToString(), Color.Black);
             BorderColor.Add(Roles.End.ToString(), Color.Black);
         }

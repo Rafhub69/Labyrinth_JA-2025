@@ -60,10 +60,10 @@ namespace finalProjectJA_2025
             image = new Bitmap(totalWidth, totalHeight);
             pictureBoxCentral.Image = image;
 
+            comboBoxCellSize.Text = intCellSize[4].ToString();
+
             comboBoxHeight.Text = intTableSize[4].ToString();
             comboBoxWidth.Text = intTableSize[4].ToString();
-
-            comboBoxCellSize.Text = intCellSize[4].ToString();
 
             comboBoxSizeMode.Text = pictureBoxSizeMods[2].ToString();
             comboBoxCoresNumber.Text = "1";
@@ -142,7 +142,7 @@ namespace finalProjectJA_2025
 
             createdlabirynth.changeMaze(newSize);
             solvedLabirynth.changeMaze(newSize);
-  
+
         }
 
         private void setNewLabirynthSize()
@@ -151,7 +151,7 @@ namespace finalProjectJA_2025
             int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 0;
             int indexCellSize = comboBoxCellSize.SelectedIndex > 0 ? comboBoxCellSize.SelectedIndex : 0;
 
-            Debug.Write("1. indexWidth: " + indexWidth + " indexHeight: " + indexHeight + " indexCellSize: " + indexCellSize + "\n");
+            Debug.Write("1. indexWidth: " + intTableSize[indexWidth] + " indexHeight: " + intTableSize[indexHeight] + " indexCellSize: " + intCellSize[indexCellSize] + "\n");
 
             if (createOrSolveLabirynth)
             {
@@ -207,11 +207,15 @@ namespace finalProjectJA_2025
         private void comboBoxHeight_SelectedIndexChanged(object sender, EventArgs e)
         {
             setNewLabirynthSize();
+
+            pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
         }
 
         private void comboBoxWidth_SelectedIndexChanged(object sender, EventArgs e)
         {
             setNewLabirynthSize();
+
+            pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
         }
 
         private void comboBoxCellSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -230,11 +234,11 @@ namespace finalProjectJA_2025
                 pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
             }
 
-            if(comboBoxHeight.SelectedIndex > 0 && comboBoxWidth.SelectedIndex > 0)
-            {
-                comboBoxHeight.Text = intTableSize[comboBoxHeight.SelectedIndex].ToString();
-                comboBoxWidth.Text = intTableSize[comboBoxWidth.SelectedIndex].ToString();
-            }
+            int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 0;
+            int indexWidth = comboBoxWidth.SelectedIndex > 0 ? comboBoxWidth.SelectedIndex : 0;
+
+            comboBoxHeight.Text = intTableSize[indexHeight].ToString();
+            comboBoxWidth.Text = intTableSize[indexWidth].ToString();
         }
 
         private void comboBoxCoresNumber_SelectedIndexChanged(object sender, EventArgs e)
@@ -325,12 +329,12 @@ namespace finalProjectJA_2025
 
         private void buttonResetLabyrinth_Click(object sender, EventArgs e)
         {
-            int indexWidth = comboBoxWidth.SelectedIndex > 0 ? comboBoxWidth.SelectedIndex : intTableSize[1];
-            int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : intTableSize[1];
-            int indexCellSize = comboBoxCellSize.SelectedIndex > 0 ? comboBoxCellSize.SelectedIndex : intCellSize[1];
+            int indexWidth = comboBoxWidth.SelectedIndex > 0 ? comboBoxWidth.SelectedIndex : 3;
+            int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 3;
+            int indexCellSize = comboBoxCellSize.SelectedIndex > 0 ? comboBoxCellSize.SelectedIndex : 3;
 
-            createdlabirynth.Reset(indexCellSize, indexWidth, indexHeight);
-            solvedLabirynth.Reset(indexCellSize, indexWidth, indexHeight);
+            createdlabirynth.Reset(intCellSize[indexCellSize], intTableSize[indexWidth], intTableSize[indexHeight]);
+            solvedLabirynth.Reset(intCellSize[indexCellSize], intTableSize[indexWidth], intTableSize[indexHeight]);
 
             pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
         }
@@ -359,6 +363,22 @@ namespace finalProjectJA_2025
             else if (index == 3)
             {
                 pictureBoxCentral.SizeMode = PictureBoxSizeMode.Zoom;
+            }
+        }
+
+        private void pictureBoxCentral_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs me = (MouseEventArgs)e;
+
+            if (createOrSolveLabirynth)
+            {
+                createdlabirynth.setCellCoordinates(pictureBoxCentral.SizeMode, me.Location, new Point(pictureBoxCentral.Size));
+                pictureBoxCentral.Image = createdlabirynth.showLabyrinth();
+            }
+            else
+            {
+                solvedLabirynth.setCellCoordinates(pictureBoxCentral.SizeMode, me.Location, new Point(pictureBoxCentral.Size));
+                pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
             }
         }
     }

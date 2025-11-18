@@ -220,6 +220,92 @@ namespace finalProjectJA_2025
             }
         }
 
+        public void setCellCoordinates(PictureBoxSizeMode SizeMode, Point mouseCoordinates, Point pictureBoxSize)
+        {
+            Point totalSize = new Point(LabiryntSize.X * CellSize.X, LabiryntSize.Y * CellSize.Y);
+            Point correction = new Point(-(pictureBoxSize.X - totalSize.X) / 2, -(pictureBoxSize.Y - totalSize.Y) / 2);
+
+            if (SizeMode == PictureBoxSizeMode.Normal)
+            {
+
+            }
+            else if (SizeMode == PictureBoxSizeMode.StretchImage)
+            {
+                mouseCoordinates.Offset(correction);
+            }
+            else if (SizeMode == PictureBoxSizeMode.Zoom)
+            {
+                mouseCoordinates.Offset(correction);
+            }
+            else if (SizeMode == PictureBoxSizeMode.CenterImage)
+            {
+                mouseCoordinates.Offset(correction);
+            }
+
+            Point coordinates = new Point((mouseCoordinates.X / CellSize.X), (mouseCoordinates.Y / CellSize.Y));
+
+            if (coordinates.X > -1 && coordinates.X < LabiryntSize.X && coordinates.Y > -1 && coordinates.Y < LabiryntSize.Y)
+            {
+                changeCellRole(coordinates);
+            }
+
+        }
+
+        public void changeCellRole(Point mainPoint)
+        {
+            changeCellRole(mainPoint.X, mainPoint.Y);
+        }
+
+        public void changeCellRole(int coordinatesI, int coordinatesJ)
+        {
+            Point initPoint = new Point(-1, -1);
+
+            if (maze[coordinatesI, coordinatesJ].Role == Roles.Empty)
+            {
+                if (beginingCell.Equals(initPoint))
+                {
+                    maze[coordinatesI, coordinatesJ].Role = Roles.Begining;
+                    beginingCell = new Point(coordinatesI, coordinatesJ);
+                }
+                else if (endCell.Equals(initPoint))
+                {
+                    maze[coordinatesI, coordinatesJ].Role = Roles.End;
+                    endCell = new Point(coordinatesI, coordinatesJ);
+                }
+                else
+                {
+                    maze[coordinatesI, coordinatesJ].Role = Roles.Wall;
+                }
+            }
+            else if (maze[coordinatesI, coordinatesJ].Role == Roles.Begining)
+            {
+                maze[coordinatesI, coordinatesJ].Role = Roles.Wall;
+                beginingCell = initPoint;
+            }
+            else if (maze[coordinatesI, coordinatesJ].Role == Roles.End)
+            {
+                maze[coordinatesI, coordinatesJ].Role = Roles.Wall;
+                endCell = initPoint;
+            }
+            else if (maze[coordinatesI, coordinatesJ].Role == Roles.Wall)
+            {
+                if (beginingCell.Equals(initPoint))
+                {
+                    maze[coordinatesI, coordinatesJ].Role = Roles.Begining;
+                    beginingCell = new Point(coordinatesI, coordinatesJ);
+                }
+                else if (endCell.Equals(initPoint))
+                {
+                    maze[coordinatesI, coordinatesJ].Role = Roles.End;
+                    endCell = new Point(coordinatesI, coordinatesJ);
+                }
+                else
+                {
+                    maze[coordinatesI, coordinatesJ].Role = Roles.Empty;
+                }
+            }
+        }
+
         public Point CellSize { get => cellSize; set => cellSize = value; }
         public Point LabiryntSize { get => labiryntSize; set => labiryntSize = value; }
         public Point BeginingCell { get => beginingCell; set => beginingCell = value; }

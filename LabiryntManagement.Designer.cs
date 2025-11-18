@@ -140,13 +140,11 @@ namespace finalProjectJA_2025
             // 
             // comboBoxHeight
             // 
-            comboBoxHeight.DisplayMember = "5";
             comboBoxHeight.FormattingEnabled = true;
             comboBoxHeight.Location = new Point(95, 5);
             comboBoxHeight.Name = "comboBoxHeight";
             comboBoxHeight.Size = new Size(120, 23);
             comboBoxHeight.TabIndex = 2;
-            comboBoxHeight.ValueMember = "5";
             comboBoxHeight.SelectedIndexChanged += comboBoxHeight_SelectedIndexChanged;
             // 
             // comboBoxCellSize
@@ -218,6 +216,7 @@ namespace finalProjectJA_2025
             pictureBoxCentral.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBoxCentral.TabIndex = 6;
             pictureBoxCentral.TabStop = false;
+            pictureBoxCentral.Click += pictureBoxCentral_Click;
             // 
             // pictureBoxBackground
             // 
