@@ -22,8 +22,6 @@ namespace finalProjectJA_2025
 
         private string name;
 
-
-
         public Labirynt()
         {
             changeMaze();
@@ -161,7 +159,6 @@ namespace finalProjectJA_2025
 
         public void SaveMaze(SaveFileDialog saveFileDialog, Image image)
         {
-
             string filePath = name + MyImageId + ".jpg";
             saveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
             saveFileDialog.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp";

@@ -9,9 +9,11 @@ namespace finalProjectJA_2025
 
         private int[] intTableSize = new int[255];
 
-        private string loadedLibrary = "C#";
-
         private string[] pictureBoxSizeMods = ["Tryb Normalny", "Tryb Rozci¹gniêcia", "Tryb Wycentrowania", "Tryb Powiêkszenia"];
+
+        private string[] languagesTypes = ["C#", "C++", "Assembler"];
+
+        private string loadedLibrary = "C#";
 
         private bool createOrSolveLabirynth = true;
 
@@ -151,8 +153,6 @@ namespace finalProjectJA_2025
             int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 0;
             int indexCellSize = comboBoxCellSize.SelectedIndex > 0 ? comboBoxCellSize.SelectedIndex : 0;
 
-            Debug.Write("1. indexWidth: " + intTableSize[indexWidth] + " indexHeight: " + intTableSize[indexHeight] + " indexCellSize: " + intCellSize[indexCellSize] + "\n");
-
             if (createOrSolveLabirynth)
             {
                 createdlabirynth = new Labirynt(intTableSize[indexWidth], intTableSize[indexHeight], "maze");
@@ -251,15 +251,17 @@ namespace finalProjectJA_2025
             createOrSolveLabirynth = true;
             radioButtonCreatingLabiryth.Checked = true;
 
-            if (loadedLibrary == "C#")
+            int status = setStatus(createdlabirynth);
+
+            if (loadedLibrary == languagesTypes[0])
             {
                 CreateLabyrinth();
             }
-            else if (loadedLibrary == "C++")
+            else if (loadedLibrary == languagesTypes[1])
             {
                 CreateLabyrinthC();
             }
-            else if (loadedLibrary == "Assembler")
+            else if (loadedLibrary == languagesTypes[2])
             {
                 CreateLabyrinthAssembler();
             }
@@ -272,20 +274,58 @@ namespace finalProjectJA_2025
             createOrSolveLabirynth = false;
             radioButtonSolvingLabiryth.Checked = true;
 
-            if (loadedLibrary == "C#")
+            int status = setStatus(solvedLabirynth);
+
+            if (loadedLibrary == languagesTypes[0])
             {
                 SolveLabyrinth();
             }
-            else if (loadedLibrary == "C++")
+            else if (loadedLibrary == languagesTypes[1])
             {
                 SolveLabyrinthC();
             }
-            else if (loadedLibrary == "Assembler")
+            else if (loadedLibrary == languagesTypes[2])
             {
                 SolveLabyrinthAssembler();
             }
 
             pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
+        }
+
+        private int setStatus(Labirynt lab)
+        {
+            int status = 0;
+            string massage = "Brakuje";
+            Point nullPoint = new Point(-1, -1);
+
+            bool isBegining = lab.BeginingCell.Equals(nullPoint);
+            bool isEnding = lab.EndCell.Equals(nullPoint);
+
+            status = (isEnding && isBegining) ? 2 : (isBegining ? 1 : (isEnding ? 3 : 0));
+
+            Debug.Write("status:" + status + " isBegining:" + isBegining + " isEnding:" + isEnding + "\n");
+
+            if (status == 1)
+            {
+                massage += " pocz¹tku";
+            }
+            else if (status == 2)
+            {
+                massage += " pocz¹tku i koñca";
+            }
+            else if (status == 3)
+            {
+                massage += " koñca";
+            }
+
+            if (status > 0)
+            {
+                massage += " labiryntu.";
+
+                MessageBox.Show(massage);
+            }
+
+            return status;
         }
 
         private void buttonSaveLabyrinth_Click(object sender, EventArgs e)
@@ -314,17 +354,17 @@ namespace finalProjectJA_2025
 
         private void radioButtonLibraryAssembler_CheckedChanged(object sender, EventArgs e)
         {
-            loadedLibrary = "Assembler";
+            loadedLibrary = languagesTypes[2];
         }
 
         private void radioButtonLibraryCplus_CheckedChanged(object sender, EventArgs e)
         {
-            loadedLibrary = "C++";
+            loadedLibrary = languagesTypes[1];
         }
 
         private void radioButtonLibraryCHash_CheckedChanged(object sender, EventArgs e)
         {
-            loadedLibrary = "C#";
+            loadedLibrary = languagesTypes[0];
         }
 
         private void buttonResetLabyrinth_Click(object sender, EventArgs e)
