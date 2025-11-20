@@ -209,6 +209,7 @@ namespace finalProjectJA_2025
             // 
             pictureBoxCentral.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pictureBoxCentral.BackColor = SystemColors.Control;
+            pictureBoxCentral.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxCentral.Cursor = Cursors.Cross;
             pictureBoxCentral.Location = new Point(10, 80);
             pictureBoxCentral.Name = "pictureBoxCentral";

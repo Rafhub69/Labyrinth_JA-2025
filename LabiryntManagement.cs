@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace finalProjectJA_2025
 {
@@ -53,8 +54,8 @@ namespace finalProjectJA_2025
                 intTableSize[i] = i + 1;
             }
 
-            createdlabirynth = new Labirynt(intCellSize[0], "maze");
-            solvedLabirynth = new Labirynt(intCellSize[0], "solvedMaze");
+            createdlabirynth = new Labirynt(intCellSize[4], "maze");
+            solvedLabirynth = new Labirynt(intCellSize[4], "solvedMaze");
 
             int totalWidth = solvedLabirynth.LabiryntSize.X * solvedLabirynth.CellSize.X;
             int totalHeight = solvedLabirynth.LabiryntSize.Y * solvedLabirynth.CellSize.Y;
@@ -119,31 +120,30 @@ namespace finalProjectJA_2025
 
             for (int i = 0; i < intTableSize.Length; i++)
             {
-
-                if (intTableSize.GetValue(i).ToString() != "0")
+                if ((int)intTableSize.GetValue(i) < maxCellNumber.Width && intTableSize.GetValue(i).ToString() != "0")
                 {
-                    if ((int)intTableSize.GetValue(i) < maxCellNumber.Width)
-                    {
-                        comboBoxWidth.Items.Add(intTableSize.GetValue(i).ToString());
-                    }
+                    comboBoxWidth.Items.Add(intTableSize.GetValue(i).ToString()); 
+                }
 
-                    if ((int)intTableSize.GetValue(i) < maxCellNumber.Height)
-                    {
-                        comboBoxHeight.Items.Add(intTableSize.GetValue(i).ToString());
-                    }
+                if ((int)intTableSize.GetValue(i) < maxCellNumber.Height && intTableSize.GetValue(i).ToString() != "0")
+                {
+                    comboBoxHeight.Items.Add(intTableSize.GetValue(i).ToString());
                 }
             }
 
             Point newSize = new Point(intTableSize[maxCellNumber.Width - 2], intTableSize[maxCellNumber.Height - 2]);
 
-            int indexWidth = comboBoxWidth.SelectedIndex > 0 ? comboBoxWidth.SelectedIndex : 0;
-            int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 0;
+            comboBoxWidth.SelectedIndex = comboBoxWidth.FindString(newSize.X.ToString());
+            comboBoxHeight.SelectedIndex = comboBoxWidth.FindString(newSize.Y.ToString());
 
-            comboBoxWidth.SelectedItem = intTableSize[indexWidth];
-            comboBoxHeight.SelectedItem = intTableSize[indexHeight];
-
-            createdlabirynth.changeMaze(newSize);
-            solvedLabirynth.changeMaze(newSize);
+            if (createOrSolveLabirynth)
+            {
+                createdlabirynth.changeMaze(newSize);
+            }
+            else
+            {
+                solvedLabirynth.changeMaze(newSize);
+            }
 
         }
 
@@ -151,19 +151,16 @@ namespace finalProjectJA_2025
         {
             int indexWidth = comboBoxWidth.SelectedIndex > 0 ? comboBoxWidth.SelectedIndex : 0;
             int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 0;
-            int indexCellSize = comboBoxCellSize.SelectedIndex > 0 ? comboBoxCellSize.SelectedIndex : 0;
 
             if (createOrSolveLabirynth)
             {
-                createdlabirynth = new Labirynt(intTableSize[indexWidth], intTableSize[indexHeight], "maze");
-                createdlabirynth.CellSize = new Point(intCellSize[indexCellSize], intCellSize[indexCellSize]);
-                createdlabirynth.MyImageId = imageNumber.X;
+                createdlabirynth.changeMaze(new Point(intTableSize[indexWidth], intTableSize[indexHeight]));
+                pictureBoxCentral.Image = createdlabirynth.showLabyrinth();
             }
             else
             {
-                solvedLabirynth = new Labirynt(intTableSize[indexWidth], intTableSize[indexHeight], "solvedMaze");
-                solvedLabirynth.CellSize = new Point(intCellSize[indexCellSize], intCellSize[indexCellSize]);
-                solvedLabirynth.MyImageId = imageNumber.Y;
+                solvedLabirynth.changeMaze(new Point(intTableSize[indexWidth], intTableSize[indexHeight]));
+                pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
             }
         }
 
@@ -206,16 +203,22 @@ namespace finalProjectJA_2025
 
         private void comboBoxHeight_SelectedIndexChanged(object sender, EventArgs e)
         {
-            setNewLabirynthSize();
+            if(comboBoxWidth.SelectedIndex == -1)
+            {
+                return;
+            }
 
-            pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
+            setNewLabirynthSize();
         }
 
         private void comboBoxWidth_SelectedIndexChanged(object sender, EventArgs e)
         {
-            setNewLabirynthSize();
+            if (comboBoxHeight.SelectedIndex == -1)
+            {
+                return;
+            }
 
-            pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
+            setNewLabirynthSize();
         }
 
         private void comboBoxCellSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -233,12 +236,6 @@ namespace finalProjectJA_2025
 
                 pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
             }
-
-            int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 0;
-            int indexWidth = comboBoxWidth.SelectedIndex > 0 ? comboBoxWidth.SelectedIndex : 0;
-
-            comboBoxHeight.Text = intTableSize[indexHeight].ToString();
-            comboBoxWidth.Text = intTableSize[indexWidth].ToString();
         }
 
         private void comboBoxCoresNumber_SelectedIndexChanged(object sender, EventArgs e)
@@ -302,8 +299,6 @@ namespace finalProjectJA_2025
             bool isEnding = lab.EndCell.Equals(nullPoint);
 
             status = (isEnding && isBegining) ? 2 : (isBegining ? 1 : (isEnding ? 3 : 0));
-
-            Debug.Write("status:" + status + " isBegining:" + isBegining + " isEnding:" + isEnding + "\n");
 
             if (status == 1)
             {

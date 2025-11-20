@@ -57,9 +57,14 @@ namespace finalProjectJA_2025
 
         public void Reset()
         {
+            ResetRole();
+            changeMaze();
+        }
+
+        public void ResetRole()
+        {
             BeginingCell = new Point(-1, -1);
             EndCell = new Point(-1, -1);
-            changeMaze();
         }
 
         public void changeMaze(Point newSize)
@@ -82,6 +87,8 @@ namespace finalProjectJA_2025
                     SetNeighbors(i, j);
                 }
             }
+
+            ResetRole();
         }
 
         public void SetNeighbors(Point cord)
