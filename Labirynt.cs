@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.AxHost;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace finalProjectJA_2025
 {
@@ -67,6 +71,20 @@ namespace finalProjectJA_2025
             EndCell = new Point(-1, -1);
         }
 
+        public void ResetPath()
+        {
+            for (int i = 0; i < LabiryntSize.X; i++)
+            {
+                for (int j = 0; j < LabiryntSize.Y; j++)
+                {
+                    if (Maze[i, j].Role == Roles.Path)
+                    {
+                        Maze[i, j].Role = Roles.Empty;
+                    }
+                }
+            }
+        }
+
         public void changeMaze(Point newSize)
         {
             LabiryntSize = newSize;
@@ -78,17 +96,121 @@ namespace finalProjectJA_2025
         {
             Maze = new Cell[LabiryntSize.X, LabiryntSize.Y];
 
+            int maxDistance = LabiryntSize.X * LabiryntSize.Y;
+
             for (int i = 0; i < LabiryntSize.X; i++)
             {
                 for (int j = 0; j < LabiryntSize.Y; j++)
                 {
                     Maze[i, j] = new Cell();
+                    Maze[i, j].DistanceFromStart = 0;
+                    Maze[i, j].TotalDistance = maxDistance;
+                    Maze[i, j].DistanceFromEnd = maxDistance;
                     Maze[i, j].Rectangle = new Rectangle(i * CellSize.X, j * CellSize.Y, CellSize.X, CellSize.Y);
                     SetNeighbors(i, j);
                 }
             }
 
             ResetRole();
+        }
+
+        public int getHeuristics(Size start, Size end)
+        {
+            int newHeuristic = LabiryntSize.X * LabiryntSize.Y;
+
+            Size error = new Size(-1, -1);
+
+            if (start.Equals(error) || end.Equals(error))
+            {
+                return newHeuristic;
+            }
+
+            newHeuristic = Math.Abs(end.Height - start.Height) + Math.Abs(end.Width - start.Width);
+
+            Maze[start.Width, start.Height].DistanceFromEnd = newHeuristic;
+
+            //Debug.Write("Heuristic[" + start.Width + " ," + start.Height + "]: " + Heuristic[start.Width, start.Height] + "\n");
+
+            return newHeuristic;
+        }
+
+        public int getHeuristics(Point start, Point end)
+        {
+            int newHeuristic = LabiryntSize.X * LabiryntSize.Y;
+
+            Point error = new Point(-1, -1);
+
+            if (start.Equals(error) || end.Equals(error))
+            {
+                return newHeuristic;
+            }
+
+            newHeuristic = Math.Abs(end.Y - start.Y) + Math.Abs(end.X - start.X);
+
+            Maze[start.X, start.Y].DistanceFromEnd = newHeuristic;
+
+            return newHeuristic;
+        }
+
+        public void SetDistanceFromStart(Point cord, int dist)
+        {
+            Maze[cord.X, cord.Y].DistanceFromStart = dist;
+        }
+
+        public void SetDistanceFromStart(Size cord, int dist)
+        {
+            Maze[cord.Width, cord.Height].DistanceFromStart = dist;
+        }
+
+        public int GetDistanceFromStart(Point cord)
+        {
+            return Maze[cord.X, cord.Y].DistanceFromStart;
+        }
+
+        public int GetDistanceFromStart(Size cord)
+        {
+            return Maze[cord.Width, cord.Height].DistanceFromStart;
+        }
+
+        public void SetDistanceFromEnd(Point cord, int dist)
+        {
+            Maze[cord.X, cord.Y].DistanceFromEnd = dist;
+        }
+
+        public void SetDistanceFromEnd(Size cord, int dist)
+        {
+            Maze[cord.Width, cord.Height].DistanceFromEnd = dist;
+        }
+
+
+        public int GetDistanceFromEnd(Point cord)
+        {
+            return Maze[cord.X, cord.Y].DistanceFromEnd;
+        }
+
+        public int GetDistanceFromEnd(Size cord)
+        {
+            return Maze[cord.Width, cord.Height].DistanceFromEnd;
+        }
+
+        public void SetTotalDistance(Point cord)
+        {
+            Maze[cord.X, cord.Y].TotalDistance = Maze[cord.X, cord.Y].DistanceFromEnd + Maze[cord.X, cord.Y].DistanceFromStart;
+        }
+
+        public void SetTotalDistance(Size cord)
+        {
+            Maze[cord.Width, cord.Height].TotalDistance = Maze[cord.Width, cord.Height].DistanceFromEnd + Maze[cord.Width, cord.Height].DistanceFromStart;
+        }
+
+        public int GetTotalDistance(Point cord)
+        {
+            return Maze[cord.X, cord.Y].TotalDistance;
+        }
+
+        public int GetTotalDistance(Size cord)
+        {
+            return Maze[cord.Width, cord.Height].TotalDistance;
         }
 
         public void SetNeighbors(Point cord)
@@ -120,6 +242,161 @@ namespace finalProjectJA_2025
             }
         }
 
+        public void SetParent(Point currentCell, Point newParent)
+        {
+            Size error = new Size(-1, -1);
+
+            if (currentCell.Equals(error))
+            {
+                return;
+            }
+
+            maze[currentCell.X, currentCell.Y].Parent = (Size)newParent;
+        }
+
+        public void SetParent(Size currentCell, Size newParent)
+        {
+            Size error = new Size(-1, -1);
+
+            if (currentCell.Equals(error))
+            {
+                return;
+            }
+
+            maze[currentCell.Width, currentCell.Height].Parent = newParent;
+        }
+
+        public Point GetParent(Point currentCell)
+        {
+            return (Point)maze[currentCell.X, currentCell.Y].Parent;
+        }
+
+        public Size GetParent(Size currentCell)
+        {
+            return maze[currentCell.Width, currentCell.Height].Parent;
+        }
+
+
+        public Size[] getNeighbors(Point cord)
+        {
+            if (cord.X < 0 || cord.Y < 0 || cord.X > maze.GetLength(0) || cord.Y > maze.GetLength(1))
+            {
+                Size error = new Size(-1, -1);
+
+                Size[] tab = new Size[4];
+
+                for (int i = 0; i < 4; i++)
+                {
+                    tab[i] = error;
+                }
+
+                //Debug.Write("cord: " + cord.X + " " + cord.Y + "\n");
+                return tab;
+            }
+
+            return maze[cord.X, cord.Y].Neighbors;
+        }
+
+        public Size[] getNeighbors(Size cord)
+        {
+            if (cord.Width < 0 || cord.Height < 0 || cord.Width > maze.GetLength(0) || cord.Height > maze.GetLength(1))
+            {
+                Size error = new Size(-1, -1);
+
+                Size[] tab = new Size[4];
+
+                for (int i = 0; i < 4; i++)
+                {
+                    tab[i] = error;
+                }
+
+                //Debug.Write("cord: " + cord.Width + " " + cord.Height + "\n");
+                return tab;
+            }
+
+            return maze[cord.Width, cord.Height].Neighbors;
+        }
+
+        public Size[] getNeighbors(int x, int y)
+        {
+            return maze[x, y].Neighbors;
+        }
+
+        public Size getNeighbor(Point cord, int index)
+        {
+            return maze[cord.X, cord.Y].Neighbors[index];
+        }
+
+        public Size getNeighbor(Size cord, int index)
+        {
+            return maze[cord.Width, cord.Height].Neighbors[index];
+        }
+
+        public Size getNeighbor(int x, int y, int index)
+        {
+            return maze[x, y].Neighbors[index];
+        }
+
+        public Roles getRole(Point cord)
+        {
+            return maze[cord.X, cord.Y].Role;
+
+        }
+
+        public Roles getRole(Size cord)
+        {
+            return maze[cord.Width, cord.Height].Role;
+
+        }
+
+        public Roles getRole(int x, int y)
+        {
+            return maze[x, y].Role;
+        }
+
+        public bool isCellNull(Point cord)
+        {
+            Point error = new Point(-1, -1);
+
+            if (cord.Equals(error))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isCellNull(Size cord)
+        {
+            Size error = new Size(-1, -1);
+
+            if (cord.Equals(error))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isCellNull(int x, int y)
+        {
+            int errorX = -1;
+            int errorY = -1;
+
+            if (x == errorX & y == errorY)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public Bitmap showLabyrinth()
         {
             int totalWidth = LabiryntSize.X * cellSize.X;
@@ -130,6 +407,20 @@ namespace finalProjectJA_2025
 
             Pen pen = new Pen(Color.Black, 4);
             SolidBrush brush = new SolidBrush(Color.White);
+            Brush textBrush = new SolidBrush(Color.Black);
+            Font font = new Font("Segoe UI", 9F, FontStyle.Bold);
+
+            StringFormat sfCenter = new StringFormat();
+            StringFormat sfRight = new StringFormat();
+            StringFormat sfLeft = new StringFormat();
+            sfCenter.LineAlignment = StringAlignment.Center;
+            sfCenter.Alignment = StringAlignment.Center;
+
+            sfRight.LineAlignment = StringAlignment.Far;
+            sfRight.Alignment = StringAlignment.Far;
+
+            sfLeft.LineAlignment = StringAlignment.Near;
+            sfLeft.Alignment = StringAlignment.Near;
 
             for (int i = 0; i < LabiryntSize.X; i++)
             {
@@ -141,10 +432,17 @@ namespace finalProjectJA_2025
                     graphics.FillRectangle(brush, maze[i, j].Rectangle);
 
                     graphics.DrawRectangle(pen, maze[i, j].Rectangle);
+
+                    if(cellSize.X > 45)
+                    {
+                        graphics.DrawString(maze[i, j].DistanceFromEnd.ToString(), font, textBrush, maze[i, j].Rectangle, sfRight);
+
+                        graphics.DrawString(maze[i, j].DistanceFromStart.ToString(), font, textBrush, maze[i, j].Rectangle, sfLeft);
+
+                        graphics.DrawString(maze[i, j].TotalDistance.ToString(), font, textBrush, maze[i, j].Rectangle, sfCenter);
+                    }
                 }
             }
-
-            //Debug.Write("i: " + i + " j: " + j + "\n");
 
             return image;
         }
@@ -255,6 +553,16 @@ namespace finalProjectJA_2025
 
         }
 
+        public void changeCellRole(Point mainPoint, Roles newRole)
+        {
+            changeCellRole(mainPoint.X, mainPoint.Y, newRole);
+        }
+
+        public void changeCellRole(int coordinatesI, int coordinatesJ, Roles newRole)
+        {
+            maze[coordinatesI, coordinatesJ].Role = newRole;
+        }
+
         public void changeCellRole(Point mainPoint)
         {
             changeCellRole(mainPoint.X, mainPoint.Y);
@@ -291,7 +599,7 @@ namespace finalProjectJA_2025
                 maze[coordinatesI, coordinatesJ].Role = Roles.Wall;
                 endCell = initPoint;
             }
-            else if (maze[coordinatesI, coordinatesJ].Role == Roles.Wall)
+            else if (maze[coordinatesI, coordinatesJ].Role == Roles.Wall || maze[coordinatesI, coordinatesJ].Role == Roles.Path)
             {
                 if (beginingCell.Equals(initPoint))
                 {
@@ -310,12 +618,13 @@ namespace finalProjectJA_2025
             }
         }
 
+        public Point EndCell { get => endCell; set => endCell = value; }
         public Point CellSize { get => cellSize; set => cellSize = value; }
         public Point LabiryntSize { get => labiryntSize; set => labiryntSize = value; }
         public Point BeginingCell { get => beginingCell; set => beginingCell = value; }
-        public Point EndCell { get => endCell; set => endCell = value; }
         public int MyImageId { get => myImageId; set => myImageId = value; }
         internal Cell[,] Maze { get => maze; set => maze = value; }
         public string Name { get => name; set => name = value; }
+
     }
 }

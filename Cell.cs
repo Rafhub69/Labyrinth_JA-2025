@@ -12,15 +12,18 @@ namespace finalProjectJA_2025
         Empty,
         Wall,
         Begining,
-        End
+        End,
+        Path
     };
-
 
     internal class Cell
     {
         Dictionary<string, Color> borderColor = new Dictionary<string, Color>();
         Dictionary<string, Color> roleColor = new Dictionary<string, Color>();
         Size[] neighbors = new Size[4];
+        int distanceFromStart = -1;
+        int distanceFromEnd = -1;
+        int totalDistance = -1;
         Rectangle rectangle;
         Size parent;
         Roles role;
@@ -29,7 +32,7 @@ namespace finalProjectJA_2025
         {
             setColor();
 
-            Parent = new Size(0, 0);
+            Parent = new Size(-1, -1);
             Rectangle = new Rectangle(0, 0, 50, 50);
 
             Neighbors[0] = new Size(-1, -1);//left
@@ -67,17 +70,22 @@ namespace finalProjectJA_2025
             RoleColor.Add(Roles.Wall.ToString(), Color.DarkGray);
             RoleColor.Add(Roles.Begining.ToString(), Color.Red);
             RoleColor.Add(Roles.End.ToString(), Color.Blue);
+            RoleColor.Add(Roles.Path.ToString(), Color.Firebrick);
 
             BorderColor.Add(Roles.Empty.ToString(), Color.Black);
             BorderColor.Add(Roles.Wall.ToString(), Color.Black);
             BorderColor.Add(Roles.Begining.ToString(), Color.Black);
             BorderColor.Add(Roles.End.ToString(), Color.Black);
+            BorderColor.Add(Roles.Path.ToString(), Color.Black);
         }
 
         public Dictionary<string, Color> BorderColor { get => borderColor; set => borderColor = value; }
         public Dictionary<string, Color> RoleColor { get => roleColor; set => roleColor = value; }
-        public Size[] Neighbors { get => neighbors; set => neighbors = value; }
+        public int DistanceFromStart { get => distanceFromStart; set => distanceFromStart = value; }
+        public int DistanceFromEnd { get => distanceFromEnd; set => distanceFromEnd = value; }
+        public int TotalDistance { get => totalDistance; set => totalDistance = value; }
         public Rectangle Rectangle { get => rectangle; set => rectangle = value; }
+        public Size[] Neighbors { get => neighbors; set => neighbors = value; }
         public Size Parent { get => parent; set => parent = value; }
         public Roles Role { get => role; set => role = value; }
     }

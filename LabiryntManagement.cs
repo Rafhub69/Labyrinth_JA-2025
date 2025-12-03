@@ -1,5 +1,9 @@
+using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace finalProjectJA_2025
@@ -122,7 +126,7 @@ namespace finalProjectJA_2025
             {
                 if ((int)intTableSize.GetValue(i) < maxCellNumber.Width && intTableSize.GetValue(i).ToString() != "0")
                 {
-                    comboBoxWidth.Items.Add(intTableSize.GetValue(i).ToString()); 
+                    comboBoxWidth.Items.Add(intTableSize.GetValue(i).ToString());
                 }
 
                 if ((int)intTableSize.GetValue(i) < maxCellNumber.Height && intTableSize.GetValue(i).ToString() != "0")
@@ -173,7 +177,22 @@ namespace finalProjectJA_2025
 
         private void CreateLabyrinth()
         {
+            Random rnd = new Random();
+            Size currentCell = new Size(-1, -1);
+            Size incorrectCell = new Size(-1, -1);
+            Size[] nextCells = createdlabirynth.getNeighbors(createdlabirynth.BeginingCell);
 
+            int randCell = rnd.Next(0, nextCells.GetLength(0));
+
+            while (nextCells[randCell].Equals(incorrectCell) || createdlabirynth.getRole(nextCells[randCell]) == Roles.Wall)
+            {
+                randCell = (randCell > nextCells.GetLength(0)) ? 0 : randCell++;
+
+            }
+
+            currentCell = nextCells[randCell];
+
+            nextCells = createdlabirynth.getNeighbors(currentCell);
         }
 
         private void CreateLabyrinthC()
@@ -188,7 +207,88 @@ namespace finalProjectJA_2025
 
         private void SolveLabyrinth()
         {
+            bool isSame = true;
+            bool isCurrentH = true;
+            bool isCurrentDistance = true;
+            Point currentPoint = new Point(-1, -1);
+            List<Point> openNodes = new List<Point>();
+            List<Point> closedNodes = new List<Point>();
+            Point error = new Point(-1, -1);
+            int newMovCostItem = 0;
 
+            openNodes.Add(solvedLabirynth.BeginingCell);
+
+            while (openNodes.Count > 0)
+            {
+                currentPoint = openNodes[0];
+
+                for (int i = 1; i < openNodes.Count; i++)
+                {
+                    isCurrentDistance = solvedLabirynth.GetTotalDistance(openNodes[i]) < solvedLabirynth.GetTotalDistance(currentPoint);
+                    isCurrentH = solvedLabirynth.GetDistanceFromEnd(openNodes[i]) < solvedLabirynth.GetDistanceFromEnd(currentPoint);
+                    isSame = solvedLabirynth.GetTotalDistance(openNodes[i]) == solvedLabirynth.GetTotalDistance(currentPoint);
+
+                    if (isCurrentDistance || isSame && isCurrentH)
+                    {
+                        currentPoint = openNodes[i];
+                    }
+                }
+
+                openNodes.Remove(currentPoint);
+                closedNodes.Add(currentPoint);
+
+                if (solvedLabirynth.getRole(currentPoint) == Roles.End)
+                {
+                    bool isStartFound = false;
+                    Point currentCell = solvedLabirynth.EndCell;
+                    Point nextCell = solvedLabirynth.GetParent(currentCell);
+
+                    while (!isStartFound)
+                    {
+                        currentCell = nextCell;
+                        nextCell = solvedLabirynth.GetParent(currentCell);
+                        solvedLabirynth.changeCellRole(currentCell, Roles.Path);
+
+                        if (nextCell == solvedLabirynth.BeginingCell)
+                        {
+                            isStartFound = true;
+                        }
+                    }
+
+                    return;
+                }
+
+                foreach (Point item in solvedLabirynth.getNeighbors(currentPoint))
+                {
+                    if (item.Equals(error))
+                    {
+                        //Debug.Write("item:" + item + "\n");
+
+                        continue;
+                    }
+
+                    if (solvedLabirynth.getRole(item) == Roles.Wall || closedNodes.Contains((Point)item))
+                    {
+                        continue;
+                    }
+
+                    newMovCostItem = solvedLabirynth.GetDistanceFromStart(currentPoint) + solvedLabirynth.getHeuristics(currentPoint, item);
+
+                    if (newMovCostItem < solvedLabirynth.GetDistanceFromStart(item) || !openNodes.Contains(item))
+                    {
+                        solvedLabirynth.SetDistanceFromEnd(item, solvedLabirynth.getHeuristics(item, solvedLabirynth.EndCell));
+                        solvedLabirynth.SetDistanceFromStart(item, newMovCostItem);
+                        solvedLabirynth.SetParent(item, currentPoint);
+                        solvedLabirynth.SetTotalDistance(item);
+
+
+                        if (!openNodes.Contains(item))
+                        {
+                            openNodes.Add(item);
+                        }
+                    }
+                }
+            }
         }
 
         private void SolveLabyrinthC()
@@ -203,7 +303,7 @@ namespace finalProjectJA_2025
 
         private void comboBoxHeight_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxWidth.SelectedIndex == -1)
+            if (comboBoxWidth.SelectedIndex == -1)
             {
                 return;
             }
@@ -250,6 +350,11 @@ namespace finalProjectJA_2025
 
             int status = setStatus(createdlabirynth);
 
+            if (status > 0)
+            {
+                return;
+            }
+
             if (loadedLibrary == languagesTypes[0])
             {
                 CreateLabyrinth();
@@ -272,6 +377,13 @@ namespace finalProjectJA_2025
             radioButtonSolvingLabiryth.Checked = true;
 
             int status = setStatus(solvedLabirynth);
+
+            if (status > 0)
+            {
+                return;
+            }
+
+            solvedLabirynth.ResetPath();
 
             if (loadedLibrary == languagesTypes[0])
             {
