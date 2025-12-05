@@ -58,8 +58,8 @@ namespace finalProjectJA_2025
                 intTableSize[i] = i + 1;
             }
 
-            createdlabirynth = new Labirynt(intCellSize[4], "maze");
-            solvedLabirynth = new Labirynt(intCellSize[4], "solvedMaze");
+            createdlabirynth = new Labirynt(intCellSize[4], "maze", Roles.Wall);
+            solvedLabirynth = new Labirynt(intCellSize[4], "solvedMaze", Roles.Empty);
 
             int totalWidth = solvedLabirynth.LabiryntSize.X * solvedLabirynth.CellSize.X;
             int totalHeight = solvedLabirynth.LabiryntSize.Y * solvedLabirynth.CellSize.Y;
@@ -140,15 +140,8 @@ namespace finalProjectJA_2025
             comboBoxWidth.SelectedIndex = comboBoxWidth.FindString(newSize.X.ToString());
             comboBoxHeight.SelectedIndex = comboBoxWidth.FindString(newSize.Y.ToString());
 
-            if (createOrSolveLabirynth)
-            {
-                createdlabirynth.changeMaze(newSize);
-            }
-            else
-            {
-                solvedLabirynth.changeMaze(newSize);
-            }
-
+            createdlabirynth.changeMaze(newSize);
+            solvedLabirynth.changeMaze(newSize);
         }
 
         private void setNewLabirynthSize()
@@ -177,22 +170,9 @@ namespace finalProjectJA_2025
 
         private void CreateLabyrinth()
         {
-            Random rnd = new Random();
-            Size currentCell = new Size(-1, -1);
-            Size incorrectCell = new Size(-1, -1);
-            Size[] nextCells = createdlabirynth.getNeighbors(createdlabirynth.BeginingCell);
+            HashSet<Cell> frontierCells = new HashSet<Cell>();
 
-            int randCell = rnd.Next(0, nextCells.GetLength(0));
 
-            while (nextCells[randCell].Equals(incorrectCell) || createdlabirynth.getRole(nextCells[randCell]) == Roles.Wall)
-            {
-                randCell = (randCell > nextCells.GetLength(0)) ? 0 : randCell++;
-
-            }
-
-            currentCell = nextCells[randCell];
-
-            nextCells = createdlabirynth.getNeighbors(currentCell);
         }
 
         private void CreateLabyrinthC()
@@ -458,10 +438,10 @@ namespace finalProjectJA_2025
 
             pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
         }
-
-        private void radioButtonLibraryAssembler_CheckedChanged(object sender, EventArgs e)
+        
+        private void radioButtonLibraryCHash_CheckedChanged(object sender, EventArgs e)
         {
-            loadedLibrary = languagesTypes[2];
+            loadedLibrary = languagesTypes[0];
         }
 
         private void radioButtonLibraryCplus_CheckedChanged(object sender, EventArgs e)
@@ -469,9 +449,9 @@ namespace finalProjectJA_2025
             loadedLibrary = languagesTypes[1];
         }
 
-        private void radioButtonLibraryCHash_CheckedChanged(object sender, EventArgs e)
+        private void radioButtonLibraryAssembler_CheckedChanged(object sender, EventArgs e)
         {
-            loadedLibrary = languagesTypes[0];
+            loadedLibrary = languagesTypes[2];
         }
 
         private void buttonResetLabyrinth_Click(object sender, EventArgs e)
