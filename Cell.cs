@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-
-namespace finalProjectJA_2025
+﻿namespace finalProjectJA_2025
 {
     public enum Roles
     {
@@ -77,6 +70,16 @@ namespace finalProjectJA_2025
             BorderColor.Add(Roles.Begining.ToString(), Color.Black);
             BorderColor.Add(Roles.End.ToString(), Color.Black);
             BorderColor.Add(Roles.Path.ToString(), Color.Black);
+        }
+
+        public Color getRoleColor(string name)
+        {
+            if(!RoleColor.Keys.Contains(name))
+            {
+                return Color.White;
+            }
+
+            return RoleColor[name];
         }
 
         public Dictionary<string, Color> BorderColor { get => borderColor; set => borderColor = value; }

@@ -218,6 +218,9 @@ namespace finalProjectJA_2025
             pictureBoxCentral.TabIndex = 6;
             pictureBoxCentral.TabStop = false;
             pictureBoxCentral.Click += pictureBoxCentral_Click;
+            pictureBoxCentral.MouseUp += pictureBoxCentral_MouseUp;
+            pictureBoxCentral.MouseDown += pictureBoxCentral_MouseDown;
+            pictureBoxCentral.MouseMove += pictureBoxCentral_MouseMove;
             // 
             // pictureBoxBackground
             // 
