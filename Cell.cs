@@ -1,4 +1,6 @@
-﻿namespace finalProjectJA_2025
+﻿using System.Diagnostics;
+
+namespace finalProjectJA_2025
 {
     public enum Roles
     {
@@ -23,7 +25,7 @@
 
         public Cell()
         {
-            setColor();
+            setColor(); //Debug.Write(" :" +   + "\n");
 
             Parent = new Size(-1, -1);
             Rectangle = new Rectangle(0, 0, 50, 50);
@@ -61,8 +63,8 @@
         {
             RoleColor.Add(Roles.Empty.ToString(), Color.White);
             RoleColor.Add(Roles.Wall.ToString(), Color.DarkGray);
-            RoleColor.Add(Roles.Begining.ToString(), Color.Red);
-            RoleColor.Add(Roles.End.ToString(), Color.Blue);
+            RoleColor.Add(Roles.Begining.ToString(), Color.DarkRed);
+            RoleColor.Add(Roles.End.ToString(), Color.DarkBlue);
             RoleColor.Add(Roles.Path.ToString(), Color.Firebrick);
 
             BorderColor.Add(Roles.Empty.ToString(), Color.Black);

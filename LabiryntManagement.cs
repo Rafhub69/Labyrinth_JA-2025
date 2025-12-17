@@ -1,8 +1,4 @@
-using Microsoft.VisualBasic;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace finalProjectJA_2025
 {
@@ -17,6 +13,7 @@ namespace finalProjectJA_2025
         private readonly string[] languagesTypes = ["C#", "C++", "Assembler"];
 
         private bool createOrSolveLabirynth = true;
+        private bool isLabirynthCreated = false;
         private bool isMouseDown = false;
 
         List<Point> activeCells = new List<Point>();
@@ -166,82 +163,77 @@ namespace finalProjectJA_2025
         {
             createdlabirynth.SetMyImageId(sfd);
             solvedLabirynth.SetMyImageId(sfd);
-            //Debug.Write("\n");
         }
 
-        private void CreateLabyrinth()
+        private long CreateLabyrinth()
         {
-            Size error = new Size(-1,-1);
-            int randomIndex = 0, randomIndexNew = 0, iterations = 10000;
+            int randomIndex = 0;
+            Random rnd = new Random();
             List<Size> frontierCells = new List<Size>();
+            List<Size> adjacentCells = new List<Size>();
+            Size currentElement = (Size)createdlabirynth.BeginingCell;
+            int maxNumberOfCells = createdlabirynth.Maze.GetLength(0) * createdlabirynth.Maze.GetLength(1);
             createdlabirynth.changeCellRole(createdlabirynth.BeginingCell, Roles.Empty);
+            createdlabirynth.changeCellRole(createdlabirynth.EndCell, Roles.Wall);
 
-            //Pick a begining cell, and carve path from it to frontier.
-            Size[] newFrontireCells = createdlabirynth.SetFrontiers(createdlabirynth.BeginingCell, frontierCells, Roles.Wall);
+            Stopwatch watch = Stopwatch.StartNew();
 
-            for (int i = 0; i < newFrontireCells.Length; i++)
+            adjacentCells = createdlabirynth.SetListFrontiers(currentElement, Roles.Wall);
+
+            createdlabirynth.changeCellsRole(adjacentCells, Roles.Empty);
+
+            for (int i = 0; i < adjacentCells.Count(); i++)
             {
-                if(!newFrontireCells[i].Equals(error))
-                {
-                    frontierCells.Add(newFrontireCells[i]);
-
-                    createdlabirynth.carvePath((Size)createdlabirynth.BeginingCell, frontierCells[i], Roles.Empty);
-                }
+                createdlabirynth.SetParent(adjacentCells.ElementAt(i), currentElement);
             }
 
-            Random rnd = new Random();
-            Size frontCell = new Size();
+            frontierCells.AddRange(adjacentCells);
 
-            while (frontierCells.Count() > 0 && iterations > 0)
+            while (frontierCells.Count() < maxNumberOfCells * 2 && frontierCells.Count() > 0)
             {
                 randomIndex = rnd.Next(0, frontierCells.Count());
 
-                //Pick a random cell from the frontier collection
-                frontCell = frontierCells.ElementAt(randomIndex);
+                currentElement = frontierCells.ElementAt(randomIndex);
 
-                //Get its neighbors: cells in distance 2 in state path (no wall)
-                newFrontireCells = createdlabirynth.SetFrontiers(frontCell, frontierCells, Roles.Wall);
+                adjacentCells = createdlabirynth.SetListFrontiers(currentElement, Roles.Wall);
 
-                if (newFrontireCells.Length > 0)
+                createdlabirynth.changeCellsRole(adjacentCells, Roles.Empty);
+
+                createdlabirynth.carvePath(createdlabirynth.GetParent(currentElement), currentElement, Roles.Empty);
+
+                for (int i = 0; i < adjacentCells.Count(); i++)
                 {
-                    //Pick a random neighbor
-                    randomIndexNew = rnd.Next(0, newFrontireCells.Count());
-
-                    //Connect the frontier cell with the neighbor
-                    createdlabirynth.carvePath(frontCell, newFrontireCells[randomIndexNew], Roles.Empty);
+                    createdlabirynth.SetParent(adjacentCells.ElementAt(i), currentElement);
                 }
 
-                //Compute the frontier cells of the chosen frontier cell and add them to the frontier collection
-                newFrontireCells = createdlabirynth.SetFrontiers(frontCell, frontierCells, Roles.Wall);
+                frontierCells.AddRange(adjacentCells);
 
-                for (int i = 1; i < newFrontireCells.Length; i++)
-                {
-                    if (!newFrontireCells[i].Equals(error))
-                    {
-                        frontierCells.Add(newFrontireCells[i]);
-                    }
-                }
-
-                //Remove frontier cell from the frontier collection
                 frontierCells.RemoveAt(randomIndex);
-                iterations--;
             }
 
+            watch.Stop();
+
             createdlabirynth.changeCellRole(createdlabirynth.BeginingCell, Roles.Begining);
+            createdlabirynth.changeCellRole(createdlabirynth.EndCell, Roles.End);
 
+            return watch.ElapsedTicks;
         }
 
-        private void CreateLabyrinthC()
+        private long CreateLabyrinthC()
         {
+            Stopwatch watch = Stopwatch.StartNew();
 
+            return watch.ElapsedTicks;
         }
 
-        private void CreateLabyrinthAssembler()
+        private long CreateLabyrinthAssembler()
         {
+            Stopwatch watch = Stopwatch.StartNew();
 
+            return watch.ElapsedTicks;
         }
 
-        private void SolveLabyrinth()
+        private long SolveLabyrinth()
         {
             bool isSame = true;
             bool isCurrentH = true;
@@ -253,6 +245,8 @@ namespace finalProjectJA_2025
             int newMovCostItem = 0;
 
             openNodes.Add(solvedLabirynth.BeginingCell);
+
+            Stopwatch watch = Stopwatch.StartNew();
 
             while (openNodes.Count > 0)
             {
@@ -291,15 +285,13 @@ namespace finalProjectJA_2025
                         }
                     }
 
-                    return;
+                    return watch.ElapsedTicks;
                 }
 
                 foreach (Point item in solvedLabirynth.getNeighbors(currentPoint))
                 {
                     if (item.Equals(error))
                     {
-                        //Debug.Write("item:" + item + "\n");
-
                         continue;
                     }
 
@@ -325,16 +317,22 @@ namespace finalProjectJA_2025
                     }
                 }
             }
+
+            return watch.ElapsedTicks;
         }
 
-        private void SolveLabyrinthC()
+        private long SolveLabyrinthC()
         {
+            Stopwatch watch = Stopwatch.StartNew();
 
+            return watch.ElapsedTicks;
         }
 
-        private void SolveLabyrinthAssembler()
+        private long SolveLabyrinthAssembler()
         {
+            Stopwatch watch = Stopwatch.StartNew();
 
+            return watch.ElapsedTicks;
         }
 
         private void comboBoxHeight_SelectedIndexChanged(object sender, EventArgs e)
@@ -393,24 +391,33 @@ namespace finalProjectJA_2025
 
             if (loadedLibrary == languagesTypes[0])
             {
-                CreateLabyrinth();
+                createdlabirynth.Time = CreateLabyrinth();
             }
             else if (loadedLibrary == languagesTypes[1])
             {
-                CreateLabyrinthC();
+                createdlabirynth.Time = CreateLabyrinthC();
             }
             else if (loadedLibrary == languagesTypes[2])
             {
-                CreateLabyrinthAssembler();
+                createdlabirynth.Time = CreateLabyrinthAssembler();
             }
 
             pictureBoxCentral.Image = createdlabirynth.showLabyrinth();
+
+            labelTimeCreation.Text = "Czas stworzenia labiryntu: " + createdlabirynth.Time;
+
+            isLabirynthCreated = true;
         }
 
         private void buttonSolveLabyrinth_Click(object sender, EventArgs e)
         {
             createOrSolveLabirynth = false;
             radioButtonSolvingLabiryth.Checked = true;
+
+            if (isLabirynthCreated)
+            {
+                solvedLabirynth = createdlabirynth;
+            }
 
             int status = setStatus(solvedLabirynth);
 
@@ -423,18 +430,21 @@ namespace finalProjectJA_2025
 
             if (loadedLibrary == languagesTypes[0])
             {
-                SolveLabyrinth();
+                solvedLabirynth.Time = SolveLabyrinth();
+
             }
             else if (loadedLibrary == languagesTypes[1])
             {
-                SolveLabyrinthC();
+                solvedLabirynth.Time = SolveLabyrinthC();
             }
             else if (loadedLibrary == languagesTypes[2])
             {
-                SolveLabyrinthAssembler();
+                solvedLabirynth.Time = SolveLabyrinthAssembler();
             }
 
             pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
+
+            labelTimeSolved.Text = "Czas rozwi¹zania labiryntu: " + solvedLabirynth.Time;
         }
 
         private int setStatus(Labirynt lab)
@@ -516,10 +526,16 @@ namespace finalProjectJA_2025
             int indexHeight = comboBoxHeight.SelectedIndex > 0 ? comboBoxHeight.SelectedIndex : 3;
             int indexCellSize = comboBoxCellSize.SelectedIndex > 0 ? comboBoxCellSize.SelectedIndex : 3;
 
+            createOrSolveLabirynth = true;
+
             createdlabirynth.Reset(intCellSize[indexCellSize], intTableSize[indexWidth], intTableSize[indexHeight]);
             solvedLabirynth.Reset(intCellSize[indexCellSize], intTableSize[indexWidth], intTableSize[indexHeight]);
 
             pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
+
+            isLabirynthCreated = false;
+
+            Debug.Write("597 Reset\n");
         }
 
         private void comboBoxSizeMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -574,7 +590,7 @@ namespace finalProjectJA_2025
         {
             MouseEventArgs me = (MouseEventArgs)e;
 
-            if(!activeCells.Contains(me.Location) && isMouseDown)
+            if (!activeCells.Contains(me.Location) && isMouseDown)
             {
                 activeCells.Add(me.Location);
             }
@@ -599,7 +615,7 @@ namespace finalProjectJA_2025
                 }
                 else
                 {
-                    solvedLabirynth.setCellCoordinates(pictureBoxCentral.SizeMode, activeCells.ElementAt(i), new Point(pictureBoxCentral.Size));  
+                    solvedLabirynth.setCellCoordinates(pictureBoxCentral.SizeMode, activeCells.ElementAt(i), new Point(pictureBoxCentral.Size));
                 }
             }
 
@@ -612,5 +628,6 @@ namespace finalProjectJA_2025
                 pictureBoxCentral.Image = solvedLabirynth.showLabyrinth();
             }
         }
+
     }
 }
