@@ -138,32 +138,9 @@ namespace finalProjectJA_2025
                 }
             }
 
-            this.Time = 1;
+            this.Time = 0;
 
             ResetRole();
-        }
-
-        public int getHeuristics(Size start, Size end)
-        {
-            int newHeuristic = LabiryntSize.X * LabiryntSize.Y;
-
-            Size error = new Size(-1, -1);
-
-            if (start.Equals(error) || end.Equals(error))
-            {
-                return newHeuristic;
-            }
-
-            newHeuristic = Math.Abs(end.Height - start.Height) + Math.Abs(end.Width - start.Width);
-
-            Maze[start.Width, start.Height].DistanceFromEnd = newHeuristic;
-
-            if (maxDistanceFromEnd < newHeuristic)
-            {
-                maxDistanceFromEnd = newHeuristic;
-            }
-
-            return newHeuristic;
         }
 
         public int getHeuristics(Point start, Point end)
@@ -199,24 +176,9 @@ namespace finalProjectJA_2025
             Maze[cord.X, cord.Y].DistanceFromStart = dist;
         }
 
-        public void SetDistanceFromStart(Size cord, int dist)
-        {
-            if (maxDistanceFromStart < dist)
-            {
-                maxDistanceFromStart = dist;
-            }
-
-            Maze[cord.Width, cord.Height].DistanceFromStart = dist;
-        }
-
         public int GetDistanceFromStart(Point cord)
         {
             return Maze[cord.X, cord.Y].DistanceFromStart;
-        }
-
-        public int GetDistanceFromStart(Size cord)
-        {
-            return Maze[cord.Width, cord.Height].DistanceFromStart;
         }
 
         public void SetDistanceFromEnd(Point cord, int dist)
@@ -229,24 +191,9 @@ namespace finalProjectJA_2025
             Maze[cord.X, cord.Y].DistanceFromEnd = dist;
         }
 
-        public void SetDistanceFromEnd(Size cord, int dist)
-        {
-            if (maxDistanceFromEnd < dist)
-            {
-                maxDistanceFromEnd = dist;
-            }
-
-            Maze[cord.Width, cord.Height].DistanceFromEnd = dist;
-        }
-
         public int GetDistanceFromEnd(Point cord)
         {
             return Maze[cord.X, cord.Y].DistanceFromEnd;
-        }
-
-        public int GetDistanceFromEnd(Size cord)
-        {
-            return Maze[cord.Width, cord.Height].DistanceFromEnd;
         }
 
         public void SetTotalDistance(Point cord)
@@ -254,24 +201,9 @@ namespace finalProjectJA_2025
             Maze[cord.X, cord.Y].TotalDistance = Maze[cord.X, cord.Y].DistanceFromEnd + Maze[cord.X, cord.Y].DistanceFromStart;
         }
 
-        public void SetTotalDistance(Size cord)
-        {
-            Maze[cord.Width, cord.Height].TotalDistance = Maze[cord.Width, cord.Height].DistanceFromEnd + Maze[cord.Width, cord.Height].DistanceFromStart;
-        }
-
         public int GetTotalDistance(Point cord)
         {
             return Maze[cord.X, cord.Y].TotalDistance;
-        }
-
-        public int GetTotalDistance(Size cord)
-        {
-            return Maze[cord.Width, cord.Height].TotalDistance;
-        }
-
-        public void SetNeighbors(Point cord)
-        {
-            SetNeighbors(cord.X, cord.Y);
         }
 
         public void SetNeighbors(int x, int y)
@@ -296,57 +228,6 @@ namespace finalProjectJA_2025
             {
                 maze[x, y].Neighbors[3] = new Size(x, y + 1);
             }
-        }
-
-        public Size[] SetFrontiers(Point cord, Roles cellRol)
-        {
-            return SetFrontiers(cord.X, cord.Y, cellRol);
-        }
-
-        public Size[] SetFrontiers(Size cord, Roles cellRol)
-        {
-            return SetFrontiers(cord.Width, cord.Height, cellRol);
-        }
-
-        public Size[] SetFrontiers(int x, int y, Roles cellRole)
-        {
-            Size[] tab = { new Size(-1, -1), new Size(-1, -1), new Size(-1, -1), new Size(-1, -1) };
-
-            Point north = new Point(DIRECTIONS.ElementAt(0).X + x, DIRECTIONS.ElementAt(0).Y + y);
-            Point south = new Point(DIRECTIONS.ElementAt(1).X + x, DIRECTIONS.ElementAt(1).Y + y);
-            Point east = new Point(DIRECTIONS.ElementAt(2).X + x, DIRECTIONS.ElementAt(2).Y + y);
-            Point west = new Point(DIRECTIONS.ElementAt(3).X + x, DIRECTIONS.ElementAt(3).Y + y);
-
-            //left
-            if ((x > 1) && Maze[west.X, west.Y].Role == cellRole)
-            {
-                tab[0] = new Size(west);
-            }
-
-            //right
-            if ((x < labiryntSize.X - 2) && Maze[east.X, east.Y].Role == cellRole)
-            {
-                tab[1] = new Size(east.X, east.Y);
-            }
-
-            //top
-            if ((y > 1) && Maze[north.X, north.Y].Role == cellRole)
-            {
-                tab[2] = new Size(north.X, north.Y);
-            }
-
-            //bottom
-            if ((y < labiryntSize.Y - 2) && Maze[south.X, south.Y].Role == cellRole)
-            {
-                tab[3] = new Size(south.X, south.Y);
-            }
-
-            return tab;
-        }
-
-        public List<Size> SetListFrontiers(Point cord, Roles cellRol)
-        {
-            return SetListFrontiers(cord.X, cord.Y, cellRol);
         }
 
         public List<Size> SetListFrontiers(Size cord, Roles cellRol)
@@ -485,61 +366,10 @@ namespace finalProjectJA_2025
             return maze[cord.X, cord.Y].Neighbors;
         }
 
-        public Size[] getNeighbors(Size cord)
-        {
-            if (cord.Width < 0 || cord.Height < 0 || cord.Width > maze.GetLength(0) || cord.Height > maze.GetLength(1))
-            {
-                Size error = new Size(-1, -1);
-
-                Size[] tab = new Size[4];
-
-                for (int i = 0; i < 4; i++)
-                {
-                    tab[i] = error;
-                }
-
-                //Debug.Write("cord: " + cord.Width + " " + cord.Height + "\n");
-                return tab;
-            }
-
-            return maze[cord.Width, cord.Height].Neighbors;
-        }
-
-        public Size[] getNeighbors(int x, int y)
-        {
-            return maze[x, y].Neighbors;
-        }
-
-        public Size getNeighbor(Point cord, int index)
-        {
-            return maze[cord.X, cord.Y].Neighbors[index];
-        }
-
-        public Size getNeighbor(Size cord, int index)
-        {
-            return maze[cord.Width, cord.Height].Neighbors[index];
-        }
-
-        public Size getNeighbor(int x, int y, int index)
-        {
-            return maze[x, y].Neighbors[index];
-        }
-
         public Roles getRole(Point cord)
         {
             return maze[cord.X, cord.Y].Role;
 
-        }
-
-        public Roles getRole(Size cord)
-        {
-            return maze[cord.Width, cord.Height].Role;
-
-        }
-
-        public Roles getRole(int x, int y)
-        {
-            return maze[x, y].Role;
         }
 
         public Color getInterpolatedColor(Color firstColor, Color secondColor, int min, int max, int current)
@@ -745,14 +575,6 @@ namespace finalProjectJA_2025
             }
         }
 
-        public void changeCellsRole(Size[] mainPoints, Roles newRole)
-        {
-            for (int i = 0; i < mainPoints.GetLength(0); i++)
-            {
-                changeCellRole(mainPoints.ElementAt(i), newRole);
-            }
-        }
-
         public void changeCellsRole(List<Size> mainPoints, Roles newRole)
         {
             for (int i = 0; i < mainPoints.Count(); i++)
@@ -837,11 +659,6 @@ namespace finalProjectJA_2025
                     maze[coordinatesI, coordinatesJ].Role = Roles.Empty;
                 }
             }
-        }
-
-        bool checkIfInside(Size p)
-        {
-            return checkIfInside(p.Width, p.Height);
         }
 
         bool checkIfInside(Point p)

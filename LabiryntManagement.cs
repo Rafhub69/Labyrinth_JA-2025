@@ -533,9 +533,10 @@ namespace finalProjectJA_2025
 
             pictureBoxCentral.Image = createOrSolveLabirynth ? createdlabirynth.showLabyrinth() : solvedLabirynth.showLabyrinth();
 
-            isLabirynthCreated = false;
+            labelTimeCreation.Text = "Czas stworzenia labiryntu: " + createdlabirynth.Time;
+            labelTimeSolved.Text = "Czas rozwi¹zania labiryntu: " + solvedLabirynth.Time;
 
-            Debug.Write("597 Reset\n");
+            isLabirynthCreated = false;
         }
 
         private void comboBoxSizeMode_SelectedIndexChanged(object sender, EventArgs e)
