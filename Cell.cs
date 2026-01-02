@@ -25,7 +25,7 @@ namespace finalProjectJA_2025
 
         public Cell()
         {
-            setColor(); //Debug.Write(" :" +   + "\n");
+            SetColor(); //Debug.Write(" :" +   + "\n");
 
             Parent = new Size(-1, -1);
             Rectangle = new Rectangle(0, 0, 50, 50);
@@ -38,7 +38,7 @@ namespace finalProjectJA_2025
 
         public Cell(Size newParent, Rectangle newRectangle)
         {
-            setColor();
+            SetColor();
 
             Parent = newParent;
 
@@ -56,10 +56,10 @@ namespace finalProjectJA_2025
 
             this.rectangle = newRectangle;
 
-            setColor();
+            SetColor();
         }
 
-        private void setColor()
+        private void SetColor()
         {
             RoleColor.Add(Roles.Empty.ToString(), Color.White);
             RoleColor.Add(Roles.Wall.ToString(), Color.DarkGray);
@@ -74,14 +74,26 @@ namespace finalProjectJA_2025
             BorderColor.Add(Roles.Path.ToString(), Color.Black);
         }
 
-        public Color getRoleColor(string name)
+        public Color GetRoleColor(string name)
         {
-            if(!RoleColor.Keys.Contains(name))
+            if(!RoleColor.ContainsKey(name))
             {
                 return Color.White;
             }
 
             return RoleColor[name];
+        }
+
+        public Point[] NeighborsToPoint()
+        {
+            Point[] toReturn = new Point[4];
+
+            for(int i = 0; i < Neighbors.Length;i++)
+            {
+                toReturn[i] = (Point)Neighbors[i];
+            }
+
+            return toReturn;
         }
 
         public Dictionary<string, Color> BorderColor { get => borderColor; set => borderColor = value; }

@@ -31,19 +31,19 @@ namespace finalProjectJA_2025
 
         public Labirynt()
         {
-            changeMaze();
+            ChangeMaze();
         }
 
         public Labirynt(Point newSize)
         {
-            changeMaze(newSize);
+            ChangeMaze(newSize);
         }
 
         public Labirynt(int x, int y, string newName)
         {
             Name = newName;
 
-            changeMaze(new Point(x, y));
+            ChangeMaze(new Point(x, y));
         }
 
         public Labirynt(int newCellSize, string newName)
@@ -51,7 +51,7 @@ namespace finalProjectJA_2025
             CellSize = new Point(newCellSize, newCellSize);
             Name = newName;
 
-            changeMaze();
+            ChangeMaze();
         }
 
         public Labirynt(int newCellSize, string newName, Roles newRole)
@@ -59,7 +59,7 @@ namespace finalProjectJA_2025
             CellSize = new Point(newCellSize, newCellSize);
             Name = newName;
 
-            changeMaze(LabiryntSize, newRole);
+            ChangeMaze(LabiryntSize, newRole);
         }
 
         public void Reset(int newCellSize, int newMazeWidth, int newMazeHeight)
@@ -73,7 +73,7 @@ namespace finalProjectJA_2025
         public void Reset()
         {
             ResetRole();
-            changeMaze();
+            ChangeMaze();
         }
 
         public void ResetRole()
@@ -102,23 +102,23 @@ namespace finalProjectJA_2025
             }
         }
 
-        public void changeMaze(Point newSize)
+        public void ChangeMaze(Point newSize)
         {
             LabiryntSize = newSize;
 
-            changeMaze();
+            ChangeMaze();
         }
 
-        public void changeMaze(Point newSize, Roles newRole)
+        public void ChangeMaze(Point newSize, Roles newRole)
         {
             LabiryntSize = newSize;
 
             StartRole = newRole;
 
-            changeMaze();
+            ChangeMaze();
         }
 
-        public void changeMaze()
+        public void ChangeMaze()
         {
             Maze = new Cell[LabiryntSize.X, LabiryntSize.Y];
 
@@ -143,7 +143,28 @@ namespace finalProjectJA_2025
             ResetRole();
         }
 
-        public int getHeuristics(Point start, Point end)
+        public void Copy(Labirynt toCopy)
+        {
+            this.Reset(toCopy.cellSize.X, toCopy.labiryntSize.X, toCopy.labiryntSize.Y);
+
+            BeginingCell = toCopy.BeginingCell;
+            EndCell = toCopy.EndCell;
+
+            for (int i = 0; i < LabiryntSize.X; i++)
+            {
+                for (int j = 0; j < LabiryntSize.Y; j++)
+                {
+                    this.Maze[i, j] = toCopy.Maze[i, j];
+                    this.Maze[i, j].Role = toCopy.Maze[i, j].Role;
+                    this.Maze[i, j].DistanceFromStart = toCopy.Maze[i, j].DistanceFromStart;
+                    this.Maze[i, j].TotalDistance = toCopy.Maze[i, j].TotalDistance;
+                    this.Maze[i, j].DistanceFromEnd = toCopy.Maze[i, j].DistanceFromEnd;
+                    this.Maze[i, j].Rectangle = toCopy.Maze[i, j].Rectangle;
+                }
+            }
+        }
+
+        public int GetHeuristics(Point start, Point end)
         {
             int newHeuristic = LabiryntSize.X * LabiryntSize.Y;
 
@@ -164,6 +185,25 @@ namespace finalProjectJA_2025
             }
 
             return newHeuristic;
+        }
+
+        public void SetStartAndEnd(Point newStart, Point newEnd)
+        {
+            Point error = new Point(-1, -1);
+
+            if(!error.Equals(newStart))
+            {
+                beginingCell = newStart;
+            }
+
+
+            if (!error.Equals(newEnd))
+            {
+                endCell = newEnd;
+            }
+
+            this.Maze[beginingCell.X, beginingCell.Y].Role = Roles.Begining;
+            this.Maze[endCell.X, endCell.Y].Role = Roles.End;
         }
 
         public void SetDistanceFromStart(Point cord, int dist)
@@ -244,7 +284,7 @@ namespace finalProjectJA_2025
             Point east = new Point(DIRECTIONS.ElementAt(2).X + x, DIRECTIONS.ElementAt(2).Y + y);
             Point west = new Point(DIRECTIONS.ElementAt(3).X + x, DIRECTIONS.ElementAt(3).Y + y);
 
-            if (checkIfInside(west))
+            if (CheckIfInside(west))
             {
                 //left
                 if (Maze[west.X, west.Y].Role == cellRole)
@@ -253,7 +293,7 @@ namespace finalProjectJA_2025
                 }
             }
 
-            if (checkIfInside(east))
+            if (CheckIfInside(east))
             {
                 //right
                 if (Maze[east.X, east.Y].Role == cellRole)
@@ -262,7 +302,7 @@ namespace finalProjectJA_2025
                 }
             }
 
-            if (checkIfInside(north))
+            if (CheckIfInside(north))
             {
                 //top
                 if (Maze[north.X, north.Y].Role == cellRole)
@@ -271,7 +311,7 @@ namespace finalProjectJA_2025
                 }
             }
 
-            if (checkIfInside(south))
+            if (CheckIfInside(south))
             {
                 //bottom
                 if (Maze[south.X, south.Y].Role == cellRole)
@@ -283,12 +323,12 @@ namespace finalProjectJA_2025
             return tab;
         }
 
-        public void carvePath(Size start, Size end, Roles cellRole)
+        public void CarvePath(Size start, Size end, Roles cellRole)
         {
-            carvePath((Point)start, (Point)end, cellRole);
+            CarvePath((Point)start, (Point)end, cellRole);
         }
 
-        public void carvePath(Point start, Point end, Roles cellRole)
+        public void CarvePath(Point start, Point end, Roles cellRole)
         {
             Point check = new Point((Size)start);
             Point between = new Point(-1, -1);
@@ -346,13 +386,18 @@ namespace finalProjectJA_2025
             return maze[currentCell.Width, currentCell.Height].Parent;
         }
 
-        public Size[] getNeighbors(Point cord)
+        public Size[] GetNeighbors(Size cord)
+        {
+            return GetNeighbors((Size)cord);
+        }
+
+        public Point[] GetNeighbors(Point cord)
         {
             if (cord.X < 0 || cord.Y < 0 || cord.X > maze.GetLength(0) || cord.Y > maze.GetLength(1))
             {
-                Size error = new Size(-1, -1);
+                Point error = new Point(-1, -1);
 
-                Size[] tab = new Size[4];
+                Point[] tab = new Point[4];
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -363,16 +408,16 @@ namespace finalProjectJA_2025
                 return tab;
             }
 
-            return maze[cord.X, cord.Y].Neighbors;
+            return maze[cord.X, cord.Y].NeighborsToPoint();
         }
 
-        public Roles getRole(Point cord)
+        public Roles GetRole(Point cord)
         {
             return maze[cord.X, cord.Y].Role;
 
         }
 
-        public Color getInterpolatedColor(Color firstColor, Color secondColor, int min, int max, int current)
+        public Color GetInterpolatedColor(Color firstColor, Color secondColor, int min, int max, int current)
         {
             if (max == 0 || current == 0)
             {
@@ -386,10 +431,10 @@ namespace finalProjectJA_2025
             byte interpolatedGreen = (byte)float.Lerp(firstColor.G, secondColor.G, ratio);
             byte interpolatedBlue = (byte)float.Lerp(firstColor.B, secondColor.B, ratio);
 
-            return Color.FromArgb(firstColor.A, interpolatedRed, interpolatedGreen, interpolatedBlue);
+            return Color.FromArgb(interpolatedAlpha, interpolatedRed, interpolatedGreen, interpolatedBlue);
         }
 
-        public Bitmap showLabyrinth()
+        public Bitmap ShowLabyrinth()
         {
             int totalWidth = LabiryntSize.X * cellSize.X;
             int totalHeight = LabiryntSize.Y * cellSize.Y;
@@ -416,7 +461,7 @@ namespace finalProjectJA_2025
             sfLeft.Alignment = StringAlignment.Near;
 
             Color first = Color.IndianRed;
-            Color second = maze[0, 0].getRoleColor(Roles.Empty.ToString());
+            Color second = maze[0, 0].GetRoleColor(Roles.Empty.ToString());
 
             for (int i = 0; i < LabiryntSize.X; i++)
             {
@@ -424,11 +469,11 @@ namespace finalProjectJA_2025
                 {
                     if (maze[i, j].Role == Roles.Empty)
                     {
-                        brush.Color = getInterpolatedColor(first, second, 0, maxDistanceFromStart, maze[i, j].DistanceFromStart);
+                        brush.Color = GetInterpolatedColor(first, second, 0, maxDistanceFromStart, maze[i, j].DistanceFromStart);
                     }
                     else if (maze[i, j].Role == Roles.Path)
                     {
-                        brush.Color = getInterpolatedColor(Color.Red, Color.Blue, 0, maxDistanceFromStart, maze[i, j].DistanceFromStart);
+                        brush.Color = GetInterpolatedColor(Color.Red, Color.Blue, 0, maxDistanceFromStart, maze[i, j].DistanceFromStart);
                     }
                     else
                     {
@@ -457,7 +502,7 @@ namespace finalProjectJA_2025
             return image;
         }
 
-        public Size getMaxTableSizeValues(Size fullSize)
+        public Size GetMaxTableSizeValues(Size fullSize)
         {
             double w = fullSize.Width / cellSize.X;
             double h = fullSize.Height / cellSize.Y;
@@ -532,16 +577,16 @@ namespace finalProjectJA_2025
             }
         }
 
-        public void setCellCoordinates(PictureBoxSizeMode SizeMode, Point mouseCoordinates, Point pictureBoxSize)
+        public void SetCellCoordinates(PictureBoxSizeMode SizeMode, Point mouseCoordinates, Point pictureBoxSize)
         {
 
-            Point coordinates = getCellCoordinates(SizeMode, mouseCoordinates, pictureBoxSize);
+            Point coordinates = GetCellCoordinates(SizeMode, mouseCoordinates, pictureBoxSize);
 
-            changeCellRole(coordinates);
+            ChangeCellRole(coordinates);
 
         }
 
-        public Point getCellCoordinates(PictureBoxSizeMode SizeMode, Point mouseCoordinates, Point pictureBoxSize)
+        public Point GetCellCoordinates(PictureBoxSizeMode SizeMode, Point mouseCoordinates, Point pictureBoxSize)
         {
             Point totalSize = new Point(LabiryntSize.X * CellSize.X, LabiryntSize.Y * CellSize.Y);
             Point correction = new Point(-(pictureBoxSize.X - totalSize.X) / 2, -(pictureBoxSize.Y - totalSize.Y) / 2);
@@ -565,7 +610,7 @@ namespace finalProjectJA_2025
 
             Point coordinates = new Point((mouseCoordinates.X / CellSize.X), (mouseCoordinates.Y / CellSize.Y));
 
-            if (checkIfInside(coordinates))
+            if (CheckIfInside(coordinates))
             {
                 return coordinates;
             }
@@ -575,38 +620,38 @@ namespace finalProjectJA_2025
             }
         }
 
-        public void changeCellsRole(List<Size> mainPoints, Roles newRole)
+        public void ChangeCellsRole(List<Size> mainPoints, Roles newRole)
         {
             for (int i = 0; i < mainPoints.Count(); i++)
             {
-                changeCellRole(mainPoints.ElementAt(i), newRole);
+                ChangeCellRole(mainPoints.ElementAt(i), newRole);
             }
         }
 
-        public void changeCellRole(Point mainPoint, Roles newRole)
+        public void ChangeCellRole(Point mainPoint, Roles newRole)
         {
-            changeCellRole(mainPoint.X, mainPoint.Y, newRole);
+            ChangeCellRole(mainPoint.X, mainPoint.Y, newRole);
         }
 
-        public void changeCellRole(Size mainPoint, Roles newRole)
+        public void ChangeCellRole(Size mainPoint, Roles newRole)
         {
-            changeCellRole(mainPoint.Width, mainPoint.Height, newRole);
+            ChangeCellRole(mainPoint.Width, mainPoint.Height, newRole);
         }
 
-        public void changeCellRole(int coordinatesI, int coordinatesJ, Roles newRole)
+        public void ChangeCellRole(int coordinatesI, int coordinatesJ, Roles newRole)
         {
-            if (checkIfInside(coordinatesI, coordinatesJ))
+            if (CheckIfInside(coordinatesI, coordinatesJ))
             {
                 maze[coordinatesI, coordinatesJ].Role = newRole;
             }
         }
 
-        public void changeCellRole(Point mainPoint)
+        public void ChangeCellRole(Point mainPoint)
         {
-            changeCellRole(mainPoint.X, mainPoint.Y);
+            ChangeCellRole(mainPoint.X, mainPoint.Y);
         }
 
-        public void changeCellRole(int coordinatesI, int coordinatesJ)
+        public void ChangeCellRole(int coordinatesI, int coordinatesJ)
         {
             Point initPoint = new Point(-1, -1);
 
@@ -634,12 +679,12 @@ namespace finalProjectJA_2025
             }
             else if (maze[coordinatesI, coordinatesJ].Role == Roles.Begining)
             {
-                maze[coordinatesI, coordinatesJ].Role = Roles.Wall;
+                maze[coordinatesI, coordinatesJ].Role = Roles.Empty;
                 beginingCell = initPoint;
             }
             else if (maze[coordinatesI, coordinatesJ].Role == Roles.End)
             {
-                maze[coordinatesI, coordinatesJ].Role = Roles.Wall;
+                maze[coordinatesI, coordinatesJ].Role = Roles.Empty;
                 endCell = initPoint;
             }
             else if (maze[coordinatesI, coordinatesJ].Role == Roles.Wall || maze[coordinatesI, coordinatesJ].Role == Roles.Path)
@@ -661,12 +706,12 @@ namespace finalProjectJA_2025
             }
         }
 
-        bool checkIfInside(Point p)
+        bool CheckIfInside(Point p)
         {
-            return checkIfInside(p.X, p.Y);
+            return CheckIfInside(p.X, p.Y);
         }
 
-        bool checkIfInside(int x, int y)
+        bool CheckIfInside(int x, int y)
         {
             if (x > -1 && x < LabiryntSize.X && y > -1 && y < LabiryntSize.Y)
             {
