@@ -12,20 +12,16 @@ namespace finalProjectJA_2025
 
         private readonly string[] languagesTypes = ["C#", "C++", "Assembler"];
 
+        private List<Point> activeCells = new List<Point>();
+
         private bool isMouseButtonPressed = false;
         private bool isLabirynthCreated = false;
 
-        private List<Point> activeCells = new List<Point>();
-
         private string loadedLibrary = "C#";
 
+        private int maxCoreNumber = 64;
+
         private Labirynt mylabirynth;
-
-        private Point imageNumber;
-
-        private int maxCoreNumber;
-
-        private Bitmap image;
 
         public LabiryntManagement()
         {
@@ -36,16 +32,21 @@ namespace finalProjectJA_2025
                 comboBoxCellSize.Items.Add(intCellSize.GetValue(i));
             }
 
-            maxCoreNumber = 1;
-
             for (int i = 1; i < 65; i++)
             {
                 comboBoxCoresNumber.Items.Add(i);
             }
 
+            maxCoreNumber = 1;
+
             for (int i = 0; i < pictureBoxSizeMods.GetLength(0); i++)
             {
                 comboBoxSizeMode.Items.Add(pictureBoxSizeMods[i]);
+            }
+
+            for (int i = 0; i < languagesTypes.GetLength(0); i++)
+            {
+                comboBoxLibrary.Items.Add(languagesTypes[i]);
             }
 
             for (int i = 0; i < intTableSize.Length; i++)
@@ -58,8 +59,7 @@ namespace finalProjectJA_2025
             int totalWidth = mylabirynth.LabiryntSize.X * mylabirynth.CellSize.X;
             int totalHeight = mylabirynth.LabiryntSize.Y * mylabirynth.CellSize.Y;
 
-            image = new Bitmap(totalWidth, totalHeight);
-            pictureBoxCentral.Image = image;
+            pictureBoxCentral.Image = new Bitmap(totalWidth, totalHeight);
 
             comboBoxCellSize.Text = intCellSize[4].ToString();
 
@@ -67,16 +67,12 @@ namespace finalProjectJA_2025
             comboBoxWidth.Text = intTableSize[4].ToString();
 
             comboBoxSizeMode.Text = pictureBoxSizeMods[2].ToString();
+            comboBoxLibrary.Text = languagesTypes[0];
             comboBoxCoresNumber.Text = "1";
-
-            radioButtonCreatingLabiryth.Checked = true;
-            radioButtonLibraryCHash.Checked = true;
 
             SetSizeComboBox();
 
             mylabirynth.SetMyImageId(saveFileDialog1);
-
-            imageNumber = new Point(mylabirynth.MyImageId, mylabirynth.MyImageId);
         }
 
         public void SetControlsCoordinates()
@@ -378,16 +374,20 @@ namespace finalProjectJA_2025
 
         private void buttonCreateLabyrinth_Click(object sender, EventArgs e)
         {
-            radioButtonCreatingLabiryth.Checked = true;
-
             Point oldStart = mylabirynth.BeginingCell;
             Point oldEnd = mylabirynth.EndCell;
+            Point error = new Point(-1, -1);
 
             mylabirynth.Reset();
 
-            mylabirynth.SetStartAndEnd(oldStart, oldEnd);
+            if (!error.Equals(oldStart) && !error.Equals(oldEnd))
+            {
+                mylabirynth.SetStartAndEnd(oldStart, oldEnd);
+            }
 
             int status = SetStatus(mylabirynth);
+
+            Debug.Write("status: " + status + " loadedLibrary: " + loadedLibrary + "\n");
 
             if (status > 0)
             {
@@ -416,8 +416,6 @@ namespace finalProjectJA_2025
 
         private void buttonSolveLabyrinth_Click(object sender, EventArgs e)
         {
-            radioButtonSolvingLabiryth.Checked = true;
-
             if (isLabirynthCreated)
             {
                 mylabirynth.ResetPath();
@@ -454,40 +452,6 @@ namespace finalProjectJA_2025
         private void buttonSaveLabyrinth_Click(object sender, EventArgs e)
         {
             mylabirynth.SaveMaze(saveFileDialog1, pictureBoxCentral.Image);
-        }
-
-        private void buttonSaveSolvedLabyrinth_Click(object sender, EventArgs e)
-        {
-            mylabirynth.SaveMaze(saveFileDialog1, pictureBoxCentral.Image);
-        }
-
-        private void radioButtonCreatingLabiryth_CheckedChanged(object sender, EventArgs e)
-        {
-            //createOrSolveLabirynth = radioButtonCreatingLabiryth.Checked;
-
-            pictureBoxCentral.Image = mylabirynth.ShowLabyrinth();
-        }
-
-        private void radioButtonSolvingLabiryth_CheckedChanged(object sender, EventArgs e)
-        {
-            //createOrSolveLabirynth = !radioButtonSolvingLabiryth.Checked;
-
-            pictureBoxCentral.Image = mylabirynth.ShowLabyrinth();
-        }
-
-        private void radioButtonLibraryCHash_CheckedChanged(object sender, EventArgs e)
-        {
-            loadedLibrary = languagesTypes[0];
-        }
-
-        private void radioButtonLibraryCplus_CheckedChanged(object sender, EventArgs e)
-        {
-            loadedLibrary = languagesTypes[1];
-        }
-
-        private void radioButtonLibraryAssembler_CheckedChanged(object sender, EventArgs e)
-        {
-            loadedLibrary = languagesTypes[2];
         }
 
         private void buttonResetLabyrinth_Click(object sender, EventArgs e)
@@ -575,5 +539,15 @@ namespace finalProjectJA_2025
             pictureBoxCentral.Image = mylabirynth.ShowLabyrinth();
         }
 
+        private void comboBoxLibrary_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = comboBoxLibrary.SelectedIndex;
+
+            index = (index < 0) ? 0 : index;
+
+            index = (index > languagesTypes.GetLength(0)) ? languagesTypes.GetLength(0) - 1 : index;
+
+            loadedLibrary = languagesTypes[index];
+        }
     }
 }

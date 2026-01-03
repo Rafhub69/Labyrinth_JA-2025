@@ -143,27 +143,6 @@ namespace finalProjectJA_2025
             ResetRole();
         }
 
-        public void Copy(Labirynt toCopy)
-        {
-            this.Reset(toCopy.cellSize.X, toCopy.labiryntSize.X, toCopy.labiryntSize.Y);
-
-            BeginingCell = toCopy.BeginingCell;
-            EndCell = toCopy.EndCell;
-
-            for (int i = 0; i < LabiryntSize.X; i++)
-            {
-                for (int j = 0; j < LabiryntSize.Y; j++)
-                {
-                    this.Maze[i, j] = toCopy.Maze[i, j];
-                    this.Maze[i, j].Role = toCopy.Maze[i, j].Role;
-                    this.Maze[i, j].DistanceFromStart = toCopy.Maze[i, j].DistanceFromStart;
-                    this.Maze[i, j].TotalDistance = toCopy.Maze[i, j].TotalDistance;
-                    this.Maze[i, j].DistanceFromEnd = toCopy.Maze[i, j].DistanceFromEnd;
-                    this.Maze[i, j].Rectangle = toCopy.Maze[i, j].Rectangle;
-                }
-            }
-        }
-
         public int GetHeuristics(Point start, Point end)
         {
             int newHeuristic = LabiryntSize.X * LabiryntSize.Y;
@@ -542,7 +521,6 @@ namespace finalProjectJA_2025
             string stringSeparators = ".jpg";
 
             int numCreated = -1;
-            int numSolved = -1;
             string[] result;
             string[] number;
 

@@ -39,7 +39,6 @@ namespace finalProjectJA_2025
             labelTimeSolved = new Label();
             labelCoresNumber = new Label();
             labelTimeCreation = new Label();
-            labelLabirynthChoice = new Label();
             comboBoxWidth = new ComboBox();
             comboBoxHeight = new ComboBox();
             comboBoxCellSize = new ComboBox();
@@ -49,22 +48,14 @@ namespace finalProjectJA_2025
             buttonSolveLabyrinth = new Button();
             buttonResetLabyrinth = new Button();
             buttonCreateLabyrinth = new Button();
-            buttonSaveSolvedLabyrinth = new Button();
             saveFileDialog1 = new SaveFileDialog();
             pictureBoxCentral = new PictureBox();
             pictureBoxBackground = new PictureBox();
-            radioButtonCreatingLabiryth = new RadioButton();
-            radioButtonLibraryAssembler = new RadioButton();
-            radioButtonSolvingLabiryth = new RadioButton();
-            radioButtonLibraryCplus = new RadioButton();
-            radioButtonLibraryCHash = new RadioButton();
-            groupBoxLabirynthChoice = new GroupBox();
-            groupBoxLibrary = new GroupBox();
             timerCreatingAndSolving = new System.Windows.Forms.Timer(components);
+            labelSizeMode = new Label();
+            comboBoxLibrary = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)pictureBoxCentral).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxBackground).BeginInit();
-            groupBoxLabirynthChoice.SuspendLayout();
-            groupBoxLibrary.SuspendLayout();
             SuspendLayout();
             // 
             // labelWidth
@@ -73,10 +64,10 @@ namespace finalProjectJA_2025
             labelWidth.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             labelWidth.Location = new Point(15, 40);
             labelWidth.Name = "labelWidth";
-            labelWidth.Size = new Size(75, 23);
+            labelWidth.Size = new Size(70, 23);
             labelWidth.TabIndex = 1;
             labelWidth.Text = "Szerokość:";
-            labelWidth.TextAlign = ContentAlignment.MiddleCenter;
+            labelWidth.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelHeight
             // 
@@ -84,40 +75,40 @@ namespace finalProjectJA_2025
             labelHeight.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             labelHeight.Location = new Point(15, 5);
             labelHeight.Name = "labelHeight";
-            labelHeight.Size = new Size(75, 23);
+            labelHeight.Size = new Size(70, 23);
             labelHeight.TabIndex = 0;
             labelHeight.Text = "Wysokość:";
-            labelHeight.TextAlign = ContentAlignment.MiddleCenter;
+            labelHeight.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelLibrary
             // 
             labelLibrary.BorderStyle = BorderStyle.FixedSingle;
             labelLibrary.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelLibrary.Location = new Point(760, 40);
+            labelLibrary.Location = new Point(560, 40);
             labelLibrary.Name = "labelLibrary";
-            labelLibrary.Size = new Size(120, 23);
+            labelLibrary.Size = new Size(180, 23);
             labelLibrary.TabIndex = 30;
-            labelLibrary.Text = "Wybierz bibliotekę:";
-            labelLibrary.TextAlign = ContentAlignment.MiddleCenter;
+            labelLibrary.Text = "Wybierz aktualną bibliotekę:";
+            labelLibrary.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelCellSize
             // 
             labelCellSize.BorderStyle = BorderStyle.FixedSingle;
             labelCellSize.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelCellSize.Location = new Point(225, 5);
+            labelCellSize.Location = new Point(150, 5);
             labelCellSize.Name = "labelCellSize";
             labelCellSize.Size = new Size(125, 23);
             labelCellSize.TabIndex = 0;
             labelCellSize.Text = "Wielkość komórek:";
-            labelCellSize.TextAlign = ContentAlignment.MiddleCenter;
+            labelCellSize.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelTimeSolved
             // 
             labelTimeSolved.BorderStyle = BorderStyle.FixedSingle;
             labelTimeSolved.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelTimeSolved.Location = new Point(1266, 40);
+            labelTimeSolved.Location = new Point(885, 40);
             labelTimeSolved.Name = "labelTimeSolved";
-            labelTimeSolved.Size = new Size(200, 23);
+            labelTimeSolved.Size = new Size(210, 23);
             labelTimeSolved.TabIndex = 41;
             labelTimeSolved.Text = "Czas rozwiązania labiryntu: 0 ";
             labelTimeSolved.TextAlign = ContentAlignment.MiddleLeft;
@@ -126,85 +117,74 @@ namespace finalProjectJA_2025
             // 
             labelCoresNumber.BorderStyle = BorderStyle.FixedSingle;
             labelCoresNumber.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelCoresNumber.Location = new Point(225, 40);
+            labelCoresNumber.Location = new Point(150, 40);
             labelCoresNumber.Name = "labelCoresNumber";
             labelCoresNumber.Size = new Size(125, 23);
             labelCoresNumber.TabIndex = 22;
             labelCoresNumber.Text = "Ilość użytych rdzeni:";
-            labelCoresNumber.TextAlign = ContentAlignment.MiddleCenter;
+            labelCoresNumber.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelTimeCreation
             // 
             labelTimeCreation.BorderStyle = BorderStyle.FixedSingle;
             labelTimeCreation.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelTimeCreation.Location = new Point(1266, 5);
+            labelTimeCreation.Location = new Point(885, 5);
             labelTimeCreation.Name = "labelTimeCreation";
-            labelTimeCreation.Size = new Size(200, 23);
+            labelTimeCreation.Size = new Size(210, 23);
             labelTimeCreation.TabIndex = 40;
             labelTimeCreation.Text = "Czas stworzenia labiryntu: 0";
             labelTimeCreation.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // labelLabirynthChoice
-            // 
-            labelLabirynthChoice.BorderStyle = BorderStyle.FixedSingle;
-            labelLabirynthChoice.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            labelLabirynthChoice.Location = new Point(760, 5);
-            labelLabirynthChoice.Name = "labelLabirynthChoice";
-            labelLabirynthChoice.Size = new Size(120, 23);
-            labelLabirynthChoice.TabIndex = 29;
-            labelLabirynthChoice.Text = "Wybierz labirynt:";
-            labelLabirynthChoice.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // comboBoxWidth
             // 
             comboBoxWidth.FormattingEnabled = true;
-            comboBoxWidth.Location = new Point(95, 40);
+            comboBoxWidth.Location = new Point(90, 40);
             comboBoxWidth.Name = "comboBoxWidth";
-            comboBoxWidth.Size = new Size(120, 23);
+            comboBoxWidth.Size = new Size(50, 23);
             comboBoxWidth.TabIndex = 3;
             comboBoxWidth.SelectedIndexChanged += comboBoxWidth_SelectedIndexChanged;
             // 
             // comboBoxHeight
             // 
             comboBoxHeight.FormattingEnabled = true;
-            comboBoxHeight.Location = new Point(95, 5);
+            comboBoxHeight.Location = new Point(90, 5);
             comboBoxHeight.Name = "comboBoxHeight";
-            comboBoxHeight.Size = new Size(120, 23);
+            comboBoxHeight.Size = new Size(50, 23);
             comboBoxHeight.TabIndex = 2;
             comboBoxHeight.SelectedIndexChanged += comboBoxHeight_SelectedIndexChanged;
             // 
             // comboBoxCellSize
             // 
             comboBoxCellSize.FormattingEnabled = true;
-            comboBoxCellSize.Location = new Point(355, 5);
+            comboBoxCellSize.Location = new Point(280, 5);
             comboBoxCellSize.Name = "comboBoxCellSize";
-            comboBoxCellSize.Size = new Size(120, 23);
+            comboBoxCellSize.Size = new Size(50, 23);
             comboBoxCellSize.TabIndex = 23;
             comboBoxCellSize.SelectedIndexChanged += comboBoxCellSize_SelectedIndexChanged;
             // 
             // comboBoxSizeMode
             // 
             comboBoxSizeMode.FormattingEnabled = true;
-            comboBoxSizeMode.Location = new Point(1110, 40);
+            comboBoxSizeMode.Location = new Point(745, 5);
             comboBoxSizeMode.Name = "comboBoxSizeMode";
-            comboBoxSizeMode.Size = new Size(150, 23);
+            comboBoxSizeMode.Size = new Size(130, 23);
             comboBoxSizeMode.TabIndex = 39;
             comboBoxSizeMode.SelectedIndexChanged += comboBoxSizeMode_SelectedIndexChanged;
             // 
             // comboBoxCoresNumber
             // 
             comboBoxCoresNumber.FormattingEnabled = true;
-            comboBoxCoresNumber.Location = new Point(355, 40);
+            comboBoxCoresNumber.Location = new Point(280, 40);
             comboBoxCoresNumber.Name = "comboBoxCoresNumber";
-            comboBoxCoresNumber.Size = new Size(120, 23);
+            comboBoxCoresNumber.Size = new Size(50, 23);
             comboBoxCoresNumber.TabIndex = 24;
             comboBoxCoresNumber.SelectedIndexChanged += comboBoxCoresNumber_SelectedIndexChanged;
             // 
             // buttonSaveLabyrinth
             // 
-            buttonSaveLabyrinth.Location = new Point(590, 5);
+            buttonSaveLabyrinth.Location = new Point(450, 5);
             buttonSaveLabyrinth.Name = "buttonSaveLabyrinth";
-            buttonSaveLabyrinth.Size = new Size(160, 23);
+            buttonSaveLabyrinth.Size = new Size(100, 23);
             buttonSaveLabyrinth.TabIndex = 27;
             buttonSaveLabyrinth.Text = "Zapisz labirynt";
             buttonSaveLabyrinth.UseVisualStyleBackColor = true;
@@ -212,7 +192,7 @@ namespace finalProjectJA_2025
             // 
             // buttonSolveLabyrinth
             // 
-            buttonSolveLabyrinth.Location = new Point(485, 40);
+            buttonSolveLabyrinth.Location = new Point(340, 40);
             buttonSolveLabyrinth.Name = "buttonSolveLabyrinth";
             buttonSolveLabyrinth.Size = new Size(100, 23);
             buttonSolveLabyrinth.TabIndex = 26;
@@ -222,9 +202,9 @@ namespace finalProjectJA_2025
             // 
             // buttonResetLabyrinth
             // 
-            buttonResetLabyrinth.Location = new Point(1110, 5);
+            buttonResetLabyrinth.Location = new Point(450, 40);
             buttonResetLabyrinth.Name = "buttonResetLabyrinth";
-            buttonResetLabyrinth.Size = new Size(150, 23);
+            buttonResetLabyrinth.Size = new Size(100, 23);
             buttonResetLabyrinth.TabIndex = 38;
             buttonResetLabyrinth.Text = "Resetuj labirynt";
             buttonResetLabyrinth.UseVisualStyleBackColor = true;
@@ -232,23 +212,13 @@ namespace finalProjectJA_2025
             // 
             // buttonCreateLabyrinth
             // 
-            buttonCreateLabyrinth.Location = new Point(485, 5);
+            buttonCreateLabyrinth.Location = new Point(340, 5);
             buttonCreateLabyrinth.Name = "buttonCreateLabyrinth";
             buttonCreateLabyrinth.Size = new Size(100, 23);
             buttonCreateLabyrinth.TabIndex = 25;
             buttonCreateLabyrinth.Text = "Stwórz labirynt";
             buttonCreateLabyrinth.UseVisualStyleBackColor = true;
             buttonCreateLabyrinth.Click += buttonCreateLabyrinth_Click;
-            // 
-            // buttonSaveSolvedLabyrinth
-            // 
-            buttonSaveSolvedLabyrinth.Location = new Point(590, 40);
-            buttonSaveSolvedLabyrinth.Name = "buttonSaveSolvedLabyrinth";
-            buttonSaveSolvedLabyrinth.Size = new Size(160, 23);
-            buttonSaveSolvedLabyrinth.TabIndex = 28;
-            buttonSaveSolvedLabyrinth.Text = "Zapisz rozwiazany labirynt";
-            buttonSaveSolvedLabyrinth.UseVisualStyleBackColor = true;
-            buttonSaveSolvedLabyrinth.Click += buttonSaveSolvedLabyrinth_Click;
             // 
             // pictureBoxCentral
             // 
@@ -276,105 +246,38 @@ namespace finalProjectJA_2025
             pictureBoxBackground.TabIndex = 21;
             pictureBoxBackground.TabStop = false;
             // 
-            // radioButtonCreatingLabiryth
+            // labelSizeMode
             // 
-            radioButtonCreatingLabiryth.BackColor = SystemColors.Control;
-            radioButtonCreatingLabiryth.Location = new Point(0, 0);
-            radioButtonCreatingLabiryth.Name = "radioButtonCreatingLabiryth";
-            radioButtonCreatingLabiryth.Size = new Size(79, 23);
-            radioButtonCreatingLabiryth.TabIndex = 31;
-            radioButtonCreatingLabiryth.TabStop = true;
-            radioButtonCreatingLabiryth.Text = "Tworzenie";
-            radioButtonCreatingLabiryth.UseVisualStyleBackColor = false;
-            radioButtonCreatingLabiryth.CheckedChanged += radioButtonCreatingLabiryth_CheckedChanged;
+            labelSizeMode.BorderStyle = BorderStyle.FixedSingle;
+            labelSizeMode.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            labelSizeMode.Location = new Point(560, 5);
+            labelSizeMode.Name = "labelSizeMode";
+            labelSizeMode.Size = new Size(180, 23);
+            labelSizeMode.TabIndex = 42;
+            labelSizeMode.Text = "Wybierz miejsce wyświetlania:";
+            labelSizeMode.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // radioButtonLibraryAssembler
+            // comboBoxLibrary
             // 
-            radioButtonLibraryAssembler.BackColor = SystemColors.Control;
-            radioButtonLibraryAssembler.Location = new Point(0, 0);
-            radioButtonLibraryAssembler.Name = "radioButtonLibraryAssembler";
-            radioButtonLibraryAssembler.Size = new Size(80, 23);
-            radioButtonLibraryAssembler.TabIndex = 32;
-            radioButtonLibraryAssembler.TabStop = true;
-            radioButtonLibraryAssembler.Text = "Asembler";
-            radioButtonLibraryAssembler.UseVisualStyleBackColor = false;
-            radioButtonLibraryAssembler.CheckedChanged += radioButtonLibraryAssembler_CheckedChanged;
-            // 
-            // radioButtonSolvingLabiryth
-            // 
-            radioButtonSolvingLabiryth.BackColor = SystemColors.Control;
-            radioButtonSolvingLabiryth.Location = new Point(105, 0);
-            radioButtonSolvingLabiryth.Name = "radioButtonSolvingLabiryth";
-            radioButtonSolvingLabiryth.Size = new Size(110, 23);
-            radioButtonSolvingLabiryth.TabIndex = 33;
-            radioButtonSolvingLabiryth.TabStop = true;
-            radioButtonSolvingLabiryth.Text = "Rozwiązywanie";
-            radioButtonSolvingLabiryth.UseVisualStyleBackColor = false;
-            radioButtonSolvingLabiryth.CheckedChanged += radioButtonSolvingLabiryth_CheckedChanged;
-            // 
-            // radioButtonLibraryCplus
-            // 
-            radioButtonLibraryCplus.BackColor = SystemColors.Control;
-            radioButtonLibraryCplus.Location = new Point(106, 0);
-            radioButtonLibraryCplus.Name = "radioButtonLibraryCplus";
-            radioButtonLibraryCplus.Size = new Size(50, 23);
-            radioButtonLibraryCplus.TabIndex = 34;
-            radioButtonLibraryCplus.TabStop = true;
-            radioButtonLibraryCplus.Text = "C++";
-            radioButtonLibraryCplus.TextAlign = ContentAlignment.MiddleCenter;
-            radioButtonLibraryCplus.UseVisualStyleBackColor = false;
-            radioButtonLibraryCplus.CheckedChanged += radioButtonLibraryCplus_CheckedChanged;
-            // 
-            // radioButtonLibraryCHash
-            // 
-            radioButtonLibraryCHash.BackColor = SystemColors.Control;
-            radioButtonLibraryCHash.Location = new Point(175, 0);
-            radioButtonLibraryCHash.Name = "radioButtonLibraryCHash";
-            radioButtonLibraryCHash.Size = new Size(40, 23);
-            radioButtonLibraryCHash.TabIndex = 35;
-            radioButtonLibraryCHash.TabStop = true;
-            radioButtonLibraryCHash.Text = "C#";
-            radioButtonLibraryCHash.UseVisualStyleBackColor = false;
-            radioButtonLibraryCHash.CheckedChanged += radioButtonLibraryCHash_CheckedChanged;
-            // 
-            // groupBoxLabirynthChoice
-            // 
-            groupBoxLabirynthChoice.BackColor = SystemColors.ActiveCaption;
-            groupBoxLabirynthChoice.Controls.Add(radioButtonCreatingLabiryth);
-            groupBoxLabirynthChoice.Controls.Add(radioButtonSolvingLabiryth);
-            groupBoxLabirynthChoice.Location = new Point(885, 5);
-            groupBoxLabirynthChoice.Name = "groupBoxLabirynthChoice";
-            groupBoxLabirynthChoice.Size = new Size(215, 23);
-            groupBoxLabirynthChoice.TabIndex = 36;
-            groupBoxLabirynthChoice.TabStop = false;
-            // 
-            // groupBoxLibrary
-            // 
-            groupBoxLibrary.BackColor = SystemColors.ActiveCaption;
-            groupBoxLibrary.Controls.Add(radioButtonLibraryAssembler);
-            groupBoxLibrary.Controls.Add(radioButtonLibraryCHash);
-            groupBoxLibrary.Controls.Add(radioButtonLibraryCplus);
-            groupBoxLibrary.Location = new Point(885, 40);
-            groupBoxLibrary.Name = "groupBoxLibrary";
-            groupBoxLibrary.RightToLeft = RightToLeft.No;
-            groupBoxLibrary.Size = new Size(215, 23);
-            groupBoxLibrary.TabIndex = 37;
-            groupBoxLibrary.TabStop = false;
+            comboBoxLibrary.FormattingEnabled = true;
+            comboBoxLibrary.Location = new Point(745, 40);
+            comboBoxLibrary.Name = "comboBoxLibrary";
+            comboBoxLibrary.Size = new Size(130, 23);
+            comboBoxLibrary.TabIndex = 43;
+            comboBoxLibrary.SelectedIndexChanged += comboBoxLibrary_SelectedIndexChanged;
             // 
             // LabiryntManagement
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1904, 1041);
+            Controls.Add(comboBoxLibrary);
+            Controls.Add(labelSizeMode);
             Controls.Add(labelTimeSolved);
             Controls.Add(labelTimeCreation);
             Controls.Add(comboBoxSizeMode);
             Controls.Add(buttonResetLabyrinth);
-            Controls.Add(groupBoxLibrary);
-            Controls.Add(groupBoxLabirynthChoice);
             Controls.Add(labelLibrary);
-            Controls.Add(labelLabirynthChoice);
-            Controls.Add(buttonSaveSolvedLabyrinth);
             Controls.Add(buttonSaveLabyrinth);
             Controls.Add(buttonSolveLabyrinth);
             Controls.Add(buttonCreateLabyrinth);
@@ -394,8 +297,6 @@ namespace finalProjectJA_2025
             WindowState = FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)pictureBoxCentral).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxBackground).EndInit();
-            groupBoxLabirynthChoice.ResumeLayout(false);
-            groupBoxLibrary.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -404,14 +305,15 @@ namespace finalProjectJA_2025
         private Label labelWidth;
         private Label labelHeight;
         private Label labelLibrary;
+        private Label labelSizeMode;
         private Label labelCellSize;
         private Label labelTimeSolved;
         private Label labelCoresNumber;
         private Label labelTimeCreation;
-        private Label labelLabirynthChoice;
 
         private ComboBox comboBoxWidth;
         private ComboBox comboBoxHeight;
+        private ComboBox comboBoxLibrary;
         private ComboBox comboBoxCellSize;
         private ComboBox comboBoxSizeMode;
         private ComboBox comboBoxCoresNumber;
@@ -423,18 +325,8 @@ namespace finalProjectJA_2025
         private Button buttonSolveLabyrinth;
         private Button buttonResetLabyrinth;
         private Button buttonCreateLabyrinth;
-        private Button buttonSaveSolvedLabyrinth;
         
         private SaveFileDialog saveFileDialog1;
-
-        private RadioButton radioButtonCreatingLabiryth;
-        private RadioButton radioButtonLibraryAssembler;
-        private RadioButton radioButtonSolvingLabiryth;
-        private RadioButton radioButtonLibraryCplus;
-        private RadioButton radioButtonLibraryCHash;
-
-        private GroupBox groupBoxLabirynthChoice;
-        private GroupBox groupBoxLibrary;
 
         private System.Windows.Forms.Timer timerCreatingAndSolving;
     }
