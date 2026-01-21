@@ -54,6 +54,10 @@ namespace finalProjectJA_2025
             timerCreatingAndSolving = new System.Windows.Forms.Timer(components);
             labelSizeMode = new Label();
             comboBoxLibrary = new ComboBox();
+            buttonTestCreation = new Button();
+            buttonTestSolving = new Button();
+            labelTestCreation = new Label();
+            labelTestSolving = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBoxCentral).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxBackground).BeginInit();
             SuspendLayout();
@@ -266,11 +270,57 @@ namespace finalProjectJA_2025
             comboBoxLibrary.TabIndex = 43;
             comboBoxLibrary.SelectedIndexChanged += comboBoxLibrary_SelectedIndexChanged;
             // 
+            // buttonTestCreation
+            // 
+            buttonTestCreation.Location = new Point(1105, 5);
+            buttonTestCreation.Name = "buttonTestCreation";
+            buttonTestCreation.Size = new Size(155, 23);
+            buttonTestCreation.TabIndex = 44;
+            buttonTestCreation.Text = "Testuj stworzenie labiryntu";
+            buttonTestCreation.UseVisualStyleBackColor = true;
+            buttonTestCreation.Click += buttonTestCreation_Click;
+            // 
+            // buttonTestSolving
+            // 
+            buttonTestSolving.Location = new Point(1105, 40);
+            buttonTestSolving.Name = "buttonTestSolving";
+            buttonTestSolving.Size = new Size(155, 23);
+            buttonTestSolving.TabIndex = 45;
+            buttonTestSolving.Text = "Testuj stworzenie labiryntu";
+            buttonTestSolving.UseVisualStyleBackColor = true;
+            buttonTestSolving.Click += buttonTestSolving_Click;
+            // 
+            // labelTestCreation
+            // 
+            labelTestCreation.BorderStyle = BorderStyle.FixedSingle;
+            labelTestCreation.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            labelTestCreation.Location = new Point(1265, 5);
+            labelTestCreation.Name = "labelTestCreation";
+            labelTestCreation.Size = new Size(250, 23);
+            labelTestCreation.TabIndex = 46;
+            labelTestCreation.Text = "Czas testów stworzonego labiryntu: 0";
+            labelTestCreation.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // labelTestSolving
+            // 
+            labelTestSolving.BorderStyle = BorderStyle.FixedSingle;
+            labelTestSolving.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            labelTestSolving.Location = new Point(1265, 40);
+            labelTestSolving.Name = "labelTestSolving";
+            labelTestSolving.Size = new Size(250, 23);
+            labelTestSolving.TabIndex = 47;
+            labelTestSolving.Text = "Czas testów stworzenia labiryntu: 0";
+            labelTestSolving.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // LabiryntManagement
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1904, 1041);
+            Controls.Add(labelTestSolving);
+            Controls.Add(labelTestCreation);
+            Controls.Add(buttonTestSolving);
+            Controls.Add(buttonTestCreation);
             Controls.Add(comboBoxLibrary);
             Controls.Add(labelSizeMode);
             Controls.Add(labelTimeSolved);
@@ -329,5 +379,9 @@ namespace finalProjectJA_2025
         private SaveFileDialog saveFileDialog1;
 
         private System.Windows.Forms.Timer timerCreatingAndSolving;
+        private Button buttonTestCreation;
+        private Button buttonTestSolving;
+        private Label labelTestCreation;
+        private Label labelTestSolving;
     }
 }

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace finalProjectJA_2025
 {
@@ -20,6 +21,9 @@ namespace finalProjectJA_2025
         private string loadedLibrary = "C#";
 
         private int maxCoreNumber = 64;
+
+        private int currentLabirynthDevisionHeight = 0;
+        private int currentLabirynthDevisionWidth = 0;
 
         private Labirynt mylabirynth;
 
@@ -193,7 +197,7 @@ namespace finalProjectJA_2025
         {
             Stopwatch watch = Stopwatch.StartNew();
 
-
+            CreateLabyrinth();
 
             return watch.ElapsedTicks;
         }
@@ -201,6 +205,8 @@ namespace finalProjectJA_2025
         private long CreateLabyrinthAssembler()
         {
             Stopwatch watch = Stopwatch.StartNew();
+
+            CreateLabyrinth();
 
             return watch.ElapsedTicks;
         }
@@ -297,12 +303,16 @@ namespace finalProjectJA_2025
         {
             Stopwatch watch = Stopwatch.StartNew();
 
+            SolveLabyrinth();
+
             return watch.ElapsedTicks;
         }
 
         private long SolveLabyrinthAssembler()
         {
             Stopwatch watch = Stopwatch.StartNew();
+
+            SolveLabyrinth();
 
             return watch.ElapsedTicks;
         }
@@ -338,6 +348,71 @@ namespace finalProjectJA_2025
             }
 
             return status;
+        }
+
+        private long testCreateLabyrinth()
+        {
+            Point newStart = new Point(1, 1);
+            Point newEnd = new Point(mylabirynth.LabiryntSize.X - 1, mylabirynth.LabiryntSize.Y - 1);
+
+            mylabirynth.Reset();
+            mylabirynth.SetStartAndEnd(newStart, newEnd);
+
+            long testTime = 0;
+            long testTimeSum = 0;
+            int numberOfTestRepetitions = 5;
+
+            testTime = CreateLabyrinth();
+
+            for (int i = 0; i < numberOfTestRepetitions; i++)
+            {
+                mylabirynth.ChangeMaze();
+                mylabirynth.SetStartAndEnd(newStart, newEnd);
+
+                testTime = CreateLabyrinth();
+                testTimeSum += testTime;
+
+                Debug.Write(i + ". testTime: " + testTime + " testTimeSum: " + testTimeSum + "\n");
+            }
+
+            testTimeSum /= numberOfTestRepetitions;
+
+            isLabirynthCreated = true;
+
+            pictureBoxCentral.Image = mylabirynth.ShowLabyrinth();
+
+            return testTimeSum;
+        }
+
+        private long testSolveLabyrinth()
+        {
+            Point newStart = new Point(1, 1);
+            Point newEnd = new Point(mylabirynth.LabiryntSize.X - 1, mylabirynth.LabiryntSize.Y - 1);
+
+            mylabirynth.Reset();
+            mylabirynth.SetStartAndEnd(newStart, newEnd);
+
+            long testTime = 0;
+            long testTimeSum = 0;
+            int numberOfTestRepetitions = 5;
+
+            CreateLabyrinth();
+            testTime = SolveLabyrinth();
+
+            for (int i = 0; i < numberOfTestRepetitions; i++)
+            {
+                mylabirynth.ResetPath();
+                testTime = SolveLabyrinth();
+                testTimeSum += testTime;
+
+                Debug.Write(i + ". testTime: " + testTime + " testTimeSum: " + testTimeSum + "\n");
+            }
+
+            testTimeSum /= numberOfTestRepetitions;
+
+            pictureBoxCentral.Image = mylabirynth.ShowLabyrinth();
+
+            return testTimeSum;
         }
 
         private void comboBoxHeight_SelectedIndexChanged(object sender, EventArgs e)
@@ -387,10 +462,10 @@ namespace finalProjectJA_2025
 
             int status = SetStatus(mylabirynth);
 
-            Debug.Write("status: " + status + " loadedLibrary: " + loadedLibrary + "\n");
-
             if (status > 0)
             {
+                Debug.Write("status: " + status + " loadedLibrary: " + loadedLibrary + "\n");
+
                 return;
             }
 
@@ -548,6 +623,21 @@ namespace finalProjectJA_2025
             index = (index > languagesTypes.GetLength(0)) ? languagesTypes.GetLength(0) - 1 : index;
 
             loadedLibrary = languagesTypes[index];
+        }
+
+        private void buttonTestCreation_Click(object sender, EventArgs e)
+        {
+            long time = testCreateLabyrinth();
+
+            labelTestCreation.Text = "Czas testów stworzonego labiryntu: " + time;
+
+        }
+
+        private void buttonTestSolving_Click(object sender, EventArgs e)
+        {
+            long time = testSolveLabyrinth();
+
+            labelTestSolving.Text = "Czas testów rozwi¹zania labiryntu: " + time;
         }
     }
 }
