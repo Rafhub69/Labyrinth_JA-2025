@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace finalProjectJA_2025
@@ -26,6 +27,12 @@ namespace finalProjectJA_2025
         private int currentLabirynthDevisionWidth = 0;
 
         private Labirynt mylabirynth;
+
+        [DllImport(@"C:\Users\Rafa³\source\repos\Projekty_Github\finalProjectJA_2025\x64\Debug\LabyrinthASM.dll")]
+        static extern int CreateLAB(int a, int b, byte[] result);
+
+        [DllImport(@"C:\Users\Rafa³\source\repos\Projekty_Github\finalProjectJA_2025\x64\Debug\LabyrinthASM.dll")]
+        static extern int SolveLAB(int a, int b, byte[] result);
 
         public LabiryntManagement()
         {
@@ -197,6 +204,10 @@ namespace finalProjectJA_2025
         {
             Stopwatch watch = Stopwatch.StartNew();
 
+            WrapperC myWrapper = new WrapperC(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y);
+
+            myWrapper.createLabyrinthWrapper();
+
             CreateLabyrinth();
 
             return watch.ElapsedTicks;
@@ -205,6 +216,10 @@ namespace finalProjectJA_2025
         private long CreateLabyrinthAssembler()
         {
             Stopwatch watch = Stopwatch.StartNew();
+
+            byte[] results = {0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 
+
+            int retVal = CreateLAB(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y, results);
 
             CreateLabyrinth();
 
@@ -303,6 +318,10 @@ namespace finalProjectJA_2025
         {
             Stopwatch watch = Stopwatch.StartNew();
 
+            WrapperC myWrapper = new WrapperC(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y);
+
+            myWrapper.solveLabyrinthWrapper();
+
             SolveLabyrinth();
 
             return watch.ElapsedTicks;
@@ -311,6 +330,10 @@ namespace finalProjectJA_2025
         private long SolveLabyrinthAssembler()
         {
             Stopwatch watch = Stopwatch.StartNew();
+
+            byte[] results = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            int retVal = SolveLAB(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y, results);
 
             SolveLabyrinth();
 
@@ -371,8 +394,6 @@ namespace finalProjectJA_2025
 
                 testTime = CreateLabyrinth();
                 testTimeSum += testTime;
-
-                Debug.Write(i + ". testTime: " + testTime + " testTimeSum: " + testTimeSum + "\n");
             }
 
             testTimeSum /= numberOfTestRepetitions;

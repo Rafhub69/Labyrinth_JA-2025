@@ -1,0 +1,3 @@
+LIBRARY LabyrinthASM
+EXPORTS CreateLAB
+EXPORTS SolveLAB
