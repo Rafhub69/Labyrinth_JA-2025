@@ -1,5 +1,8 @@
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace finalProjectJA_2025
@@ -23,16 +26,13 @@ namespace finalProjectJA_2025
 
         private int maxCoreNumber = 64;
 
-        private int currentLabirynthDevisionHeight = 0;
-        private int currentLabirynthDevisionWidth = 0;
-
         private Labirynt mylabirynth;
 
         [DllImport(@"C:\Users\Rafa³\source\repos\Projekty_Github\finalProjectJA_2025\x64\Debug\LabyrinthASM.dll")]
-        static extern int CreateLAB(int a, int b, byte[] result);
+        static extern int CreateLAB(int a, int b, byte[] result, int lenght);
 
         [DllImport(@"C:\Users\Rafa³\source\repos\Projekty_Github\finalProjectJA_2025\x64\Debug\LabyrinthASM.dll")]
-        static extern int SolveLAB(int a, int b, byte[] result);
+        static extern int SolveLAB(int a, int b, byte[] result, int lenght, byte startX, byte startY, byte endX, byte endY, int LabiryntSizeX, int LabiryntSizeY);
 
         public LabiryntManagement()
         {
@@ -48,7 +48,7 @@ namespace finalProjectJA_2025
                 comboBoxCoresNumber.Items.Add(i);
             }
 
-            maxCoreNumber = 1;
+            maxCoreNumber = Environment.ProcessorCount;
 
             for (int i = 0; i < pictureBoxSizeMods.GetLength(0); i++)
             {
@@ -79,32 +79,11 @@ namespace finalProjectJA_2025
 
             comboBoxSizeMode.Text = pictureBoxSizeMods[2].ToString();
             comboBoxLibrary.Text = languagesTypes[0];
-            comboBoxCoresNumber.Text = "1";
+            comboBoxCoresNumber.Text = maxCoreNumber.ToString();
 
             SetSizeComboBox();
 
             mylabirynth.SetMyImageId(saveFileDialog1);
-        }
-
-        public void SetControlsCoordinates()
-        {
-            //labelWidth
-            //labelHeight
-            //labelLibrary
-            //labelCellSize
-            //labelCoresNumber
-            //labelLabirynthChoice
-            //comboBoxWidth
-            //comboBoxHeight
-            //comboBoxCellSize
-            //comboBoxCoresNumber
-            //buttonSaveLabyrinth
-            //buttonSolveLabyrinth
-            //buttonCreateLabyrinth
-            //buttonSaveSolvedLabyrinth
-            //saveFileDialog1
-            //pictureBoxCentral
-            //pictureBoxBackground
         }
 
         private void SetSizeComboBox()
@@ -202,26 +181,229 @@ namespace finalProjectJA_2025
 
         private long CreateLabyrinthC()
         {
+            WrapperC myWrapper = new WrapperC(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y, mylabirynth.BeginingCell.X, mylabirynth.BeginingCell.Y, mylabirynth.EndCell.X, mylabirynth.EndCell.Y);
+
+            int[] array = new int[mylabirynth.LabiryntSize.X * mylabirynth.LabiryntSize.Y];
+
+            for (int i = 0; i < mylabirynth.LabiryntSize.X * mylabirynth.LabiryntSize.Y; i++)
+            {
+                array[i] = 0;
+            }
+
             Stopwatch watch = Stopwatch.StartNew();
 
-            WrapperC myWrapper = new WrapperC(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y);
+            myWrapper.createLabyrinthWrapper(array);
 
-            myWrapper.createLabyrinthWrapper();
+            mylabirynth.ChangeMaze(array);
 
-            CreateLabyrinth();
+            myWrapper.Dispose();
 
             return watch.ElapsedTicks;
         }
 
+        byte setNewMask(int x, int y)
+        {
+            byte mask = 0b0000000;
+
+            if (x < 0 || x > mylabirynth.LabiryntSize.X || y < 0 || y > mylabirynth.LabiryntSize.X)
+            {
+                return mask;
+            }
+
+            if (mylabirynth.Maze[x, y].Neighbors.ElementAt(0) != new Size(-1, -1))
+            {
+                mask += (byte)(1 << (0));
+            }
+
+            if (mylabirynth.Maze[x, y].Neighbors.ElementAt(1) != new Size(-1, -1))
+            {
+                mask += (byte)(1 << (1));
+            }
+
+            if (mylabirynth.Maze[x, y].Neighbors.ElementAt(2) != new Size(-1, -1))
+            {
+                mask += (byte)(1 << (2));
+            }
+
+            if (mylabirynth.Maze[x, y].Neighbors.ElementAt(3) != new Size(-1, -1))
+            {
+                mask += (byte)(1 << (3));
+            }
+
+            if (mylabirynth.Maze[x, y].Role == Roles.Wall)
+            {
+                mask += (byte)(1 << (4));
+                mask += (byte)(1 << (5));
+            }
+            else if (mylabirynth.Maze[x, y].Role == Roles.Begining)
+            {
+                mask += (byte)(1 << (4));
+            }
+            else if (mylabirynth.Maze[x, y].Role == Roles.End)
+            {
+                mask += (byte)(1 << (5));
+            }
+            else if (mylabirynth.Maze[x, y].Role == Roles.Empty)
+            {
+
+            }
+
+            if (mylabirynth.Maze[x, y].Parent == new Size(0, 0))
+            {
+
+            }
+            else if (mylabirynth.Maze[x, y].Parent == new Size(0, 1))
+            {
+
+            }
+            else if (mylabirynth.Maze[x, y].Parent == new Size(1, 0))
+            {
+
+            }
+            else if (mylabirynth.Maze[x, y].Parent == new Size(1, 1))
+            {
+
+            }
+
+            return mask;
+        }
+
+        void setElementsBasedOnMask(int x, int y, byte mask)
+        {
+            bool isStart = false, isEnd = false;
+            Point oldStart = mylabirynth.BeginingCell, oldEnd = mylabirynth.EndCell;
+
+            if (x < 0 || x > mylabirynth.LabiryntSize.X || y < 0 || y > mylabirynth.LabiryntSize.Y)
+            {
+                return;
+            }
+
+            if ((mask & (1 << 0)) == 0)
+            {
+                mylabirynth.Maze[x, y].Neighbors[0] = new Size(-1, -1);
+            }
+
+            if ((mask & (1 << 1)) != 0)
+            {
+                mylabirynth.Maze[x, y].Neighbors[1] = new Size(-1, -1);
+            }
+
+            if ((mask & (1 << 2)) != 0)
+            {
+                mylabirynth.Maze[x, y].Neighbors[2] = new Size(-1, -1);
+            }
+
+            if ((mask & (1 << 3)) != 0)
+            {
+                mylabirynth.Maze[x, y].Neighbors[3] = new Size(-1, -1);
+            }
+
+            if ((mask & (1 << 5)) != 0 && (mask & (1 << 4)) != 0)
+            {
+                mylabirynth.Maze[x, y].Role = Roles.Wall;
+            }
+            else if (((mask & (1 << 5)) != 0 && (mask & (1 << 4)) == 0))
+            {
+                if(mylabirynth.EndCell.Equals(new Point(-1, -1)))
+                {
+                    mylabirynth.Maze[x, y].Role = Roles.End;
+                    mylabirynth.EndCell = new Point(x, y);
+                    isEnd = true;
+                }else
+                {
+                    mylabirynth.Maze[x, y].Role = Roles.Empty;
+                }
+
+            }
+            else if (((mask & (1 << 5)) == 0 && (mask & (1 << 4)) != 0))
+            {
+                if (mylabirynth.BeginingCell.Equals(new Point(-1, -1)))
+                {
+                    mylabirynth.Maze[x, y].Role = Roles.Begining;
+                    mylabirynth.BeginingCell = new Point(x, y);
+                    isStart = true;
+                }
+                else
+                {
+                    mylabirynth.Maze[x, y].Role = Roles.Empty;
+                }
+                    
+            }
+            else if ((mask & (1 << 5)) == 0 && (mask & (1 << 4)) == 0)
+            {
+                mylabirynth.Maze[x, y].Role = Roles.Empty;
+            }
+
+            if ((mask & (1 << 6)) != 0 && (mask & (1 << 7)) != 0)//11
+            {
+                mylabirynth.Maze[x, y].Parent = new Size(x + 0, y - 1);
+            }
+            else if ((mask & (1 << 6)) != 0 && (mask & (1 << 7)) == 0)//10
+            {
+                mylabirynth.Maze[x, y].Parent = new Size(x + 1, y + 0);
+            }
+            else if ((mask & (1 << 6)) == 0 && (mask & (1 << 7)) != 0)//01
+            {
+                mylabirynth.Maze[x, y].Parent = new Size(x + 0, y + 1);
+            }
+            else if ((mask & (1 << 6)) == 0 && (mask & (1 << 7)) == 0)//00
+            {
+                mylabirynth.Maze[x, y].Parent = new Size(x - 1, y + 0);
+            }
+
+            if (isStart == false)
+            {
+                mylabirynth.BeginingCell = oldStart;
+                mylabirynth.Maze[oldStart.X, oldStart.Y].Role = Roles.Begining;
+            }
+
+            if (isEnd == false)
+            {
+                mylabirynth.EndCell = oldEnd;
+                mylabirynth.Maze[oldEnd.X, oldEnd.Y].Role = Roles.End;
+            }
+        }
+
         private long CreateLabyrinthAssembler()
         {
+            int FullLabiryntSize = mylabirynth.LabiryntSize.X * mylabirynth.LabiryntSize.Y;
+            int lenghtOfElement = 3, numberOfElements = lenghtOfElement * FullLabiryntSize;
+            int x = 0, y = 0;
+
+            //byte0: x, byte1: y, byte2: 2bit rodzic, 2bit stan, 4bit czy istnieje s¹siad
+
+            byte[] results = new byte[numberOfElements];
+            byte maskOne = 0b00000000;
+
+            Debug.Write(" " + "\n");
+
+            for (int i = 0; i < FullLabiryntSize; i++)
+            {
+                x = i / mylabirynth.LabiryntSize.Y;
+                y = i % mylabirynth.LabiryntSize.Y;
+
+                results[i * lenghtOfElement + 0] = ((byte)x); //Szerokoœæ
+                results[i * lenghtOfElement + 1] = ((byte)y); //Wysokoœæ
+                results[i * lenghtOfElement + 2] = 0b00000000;
+                maskOne = setNewMask(x, y);
+
+                results[i * lenghtOfElement + 2] |= maskOne;
+            }
+
             Stopwatch watch = Stopwatch.StartNew();
 
-            byte[] results = {0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 
+            int retVal = CreateLAB(FullLabiryntSize, numberOfElements, results, lenghtOfElement);//rcx, rdx, r8, r9
 
-            int retVal = CreateLAB(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y, results);
+            byte mask = 0b0000000;
 
-            CreateLabyrinth();
+            for (int i = 0; i < FullLabiryntSize; i++)
+            {
+                x = results[i * 3 + 0];
+                y = results[i * 3 + 1];
+                mask = results[i * 3 + 2];
+
+                setElementsBasedOnMask(x, y, mask);
+            }
 
             return watch.ElapsedTicks;
         }
@@ -316,26 +498,78 @@ namespace finalProjectJA_2025
 
         private long SolveLabyrinthC()
         {
+            WrapperC myWrapper = new WrapperC(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y, mylabirynth.BeginingCell.X, mylabirynth.BeginingCell.Y, mylabirynth.EndCell.X, mylabirynth.EndCell.Y);
+
+            int[] array = new int[mylabirynth.LabiryntSize.X * mylabirynth.LabiryntSize.Y];
+
+            for (int i = 0; i < mylabirynth.LabiryntSize.X * mylabirynth.LabiryntSize.Y; i++)
+            {
+                int row = i / mylabirynth.LabiryntSize.Y;
+                int col = i % mylabirynth.LabiryntSize.Y;
+
+                array[i] = (int)mylabirynth.GetRole(new Point(row, col));
+            }
+
             Stopwatch watch = Stopwatch.StartNew();
 
-            WrapperC myWrapper = new WrapperC(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y);
+            myWrapper.solveLabyrinthWrapper(array);
 
-            myWrapper.solveLabyrinthWrapper();
+            mylabirynth.ChangeMaze(array);
 
             SolveLabyrinth();
+
+            myWrapper.Dispose();
 
             return watch.ElapsedTicks;
         }
-
         private long SolveLabyrinthAssembler()
         {
+            int lenghtOfElement = 5, n = 0, x = 0, y = 0, index = 0;
+            int FullLabiryntSize = mylabirynth.LabiryntSize.X * mylabirynth.LabiryntSize.Y;
+            int numberOfElements = lenghtOfElement * FullLabiryntSize;
+
+            string binaryString = " ";
+            string formattedBinary = " ";
+
+            //byte0: x, byte1: y, byte2: 2bit rodzic, 2bit stan, 4bit czy istnieje s¹siad,
+            //byte3: odleg³oœæ od pocz¹tku x, byte4: odleg³oœæ od pocz¹tku y
+
+            byte[] results = new byte[numberOfElements];
+            byte maskOne = 0b0000000;
+
+            for (int i = 0; i < FullLabiryntSize; i++)
+            {
+                x = i / mylabirynth.LabiryntSize.Y;
+                y = i % mylabirynth.LabiryntSize.Y;
+                
+
+                results[i * lenghtOfElement + 0] = Convert.ToByte(x);//Szerokoœæ
+                results[i * lenghtOfElement + 1] = Convert.ToByte(y); //Wysokoœæ
+                results[i * lenghtOfElement + 2] = 0b00000000;
+                results[i * lenghtOfElement + 3] = 0b11111111;
+                results[i * lenghtOfElement + 4] = 0b11111111;
+
+                maskOne = setNewMask(x, y);
+
+                results[i * lenghtOfElement + 2] |= maskOne;
+            }
+
+            byte startX = ((byte)mylabirynth.BeginingCell.X), startY = ((byte)mylabirynth.BeginingCell.Y);
+            byte endX = ((byte)mylabirynth.EndCell.X), endY = ((byte)mylabirynth.EndCell.Y);
+
             Stopwatch watch = Stopwatch.StartNew();
 
-            byte[] results = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            int retVal = SolveLAB(FullLabiryntSize, numberOfElements, results, lenghtOfElement, startX, startY, endX, endY, (byte)mylabirynth.LabiryntSize.X, (byte)mylabirynth.LabiryntSize.Y);
+            //rcx, rdx, r8,r9, rsp+96, rsp+104, rsp+112, rsp+120, rsp+128, rsp+136
 
-            int retVal = SolveLAB(mylabirynth.LabiryntSize.X, mylabirynth.LabiryntSize.Y, results);
+            for (int i = 0; i < FullLabiryntSize; i++)
+            {
+                x = results[i * lenghtOfElement + 0];
+                y = results[i * lenghtOfElement + 1];
+                maskOne = results[i * lenghtOfElement + 2];
 
-            SolveLabyrinth();
+                setElementsBasedOnMask(x, y, maskOne);
+            }
 
             return watch.ElapsedTicks;
         }
@@ -425,8 +659,6 @@ namespace finalProjectJA_2025
                 mylabirynth.ResetPath();
                 testTime = SolveLabyrinth();
                 testTimeSum += testTime;
-
-                Debug.Write(i + ". testTime: " + testTime + " testTimeSum: " + testTimeSum + "\n");
             }
 
             testTimeSum /= numberOfTestRepetitions;

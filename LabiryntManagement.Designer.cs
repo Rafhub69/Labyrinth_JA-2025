@@ -186,6 +186,7 @@ namespace finalProjectJA_2025
             // 
             // buttonSaveLabyrinth
             // 
+            buttonSaveLabyrinth.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 238);
             buttonSaveLabyrinth.Location = new Point(450, 5);
             buttonSaveLabyrinth.Name = "buttonSaveLabyrinth";
             buttonSaveLabyrinth.Size = new Size(100, 23);

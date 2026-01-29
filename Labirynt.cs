@@ -118,6 +118,29 @@ namespace finalProjectJA_2025
             ChangeMaze();
         }
 
+        public void ChangeMaze(int[] array)
+        {
+            Maze = new Cell[LabiryntSize.X, LabiryntSize.Y];
+
+            int maxDistance = LabiryntSize.X * LabiryntSize.Y;
+
+            for (int i = 0; i < LabiryntSize.X; i++)
+            {
+                for (int j = 0; j < LabiryntSize.Y; j++)
+                {
+                    Maze[i, j] = new Cell();
+                    Maze[i, j].Role = (Roles)array[j * LabiryntSize.X + i];
+                    Maze[i, j].DistanceFromStart = 0;
+                    Maze[i, j].TotalDistance = maxDistance;
+                    Maze[i, j].DistanceFromEnd = maxDistance;
+                    Maze[i, j].Rectangle = new Rectangle(i * CellSize.X, j * CellSize.Y, CellSize.X, CellSize.Y);
+                    SetNeighbors(i, j);
+                }
+            }
+
+            this.Time = 0;
+        }
+
         public void ChangeMaze()
         {
             Maze = new Cell[LabiryntSize.X, LabiryntSize.Y];
